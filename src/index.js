@@ -1,17 +1,59 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { Client } from 'boardgame.io/react';
+import { SocketIO } from 'boardgame.io/multiplayer';
+import { Game } from './game';
+import BoardContainer from './containers/boardContainer';
+import Area from './components/playArea';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+export let playerID;
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+export const GameClient = Client({
+    game: Game,
+    board: BoardContainer,
+    multiplayer: SocketIO({ server: 'localhost:8080' }),
+});
+
+export class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { playerID : null}
+    }
+
+    getPlayerID() {
+        return this.state.playerID;
+    }
+
+    render() {
+        if (this.state.playerID === null) {
+            return (
+                <div>
+                    <p>Play as</p>
+                    <button onClick={() => {
+                        this.setState({ playerID: "0" });
+                        playerID = "0";
+                        }
+                    }>
+                        Player 0
+                    </button>
+                    <button onClick={() => {
+                        this.setState({ playerID: "1" });
+                        playerID = "1";
+                        }
+                    }>
+                        Player 1
+                    </button>
+                </div>
+            );
+        }
+        return (
+            <div>
+                <Area id="play-area" class="box" />
+                <GameClient playerID={this.state.playerID} />
+                {/*<HandContainer playerID={this.state.playerID} />*/}
+            </div>
+        );
+    }
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));

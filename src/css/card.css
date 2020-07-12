@@ -1,0 +1,11 @@
+.card {
+    height: 80px;
+    width: 58px;
+    background-color: #F3F3F3;
+    cursor: pointer;
+}
+
+img {
+    max-height: 100%;
+    max-width: 100%;
+}
