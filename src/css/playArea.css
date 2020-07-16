@@ -1,7 +1,15 @@
 #play-area {
-    height: 400px;
-    width: 400px;
-    padding: 15px 25px;
+    display: flex;
+    flex: 4;
+    align-items: center;
+}
+
+#play-pile {
     border: 2px solid #F3F3F3;
-    margin: 0 auto;
+    margin-left: 25%;
+    width: 150px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    position: relative;
 }

@@ -12,7 +12,7 @@ export default class Deck {
             }
         }
 
-        addCards(40, 'regular');
+        // addCards(40, 'regular');
         addCards(10, 'attack');
 
         return deck;
@@ -26,10 +26,6 @@ export default class Deck {
             this.cards[i] = this.cards[j];
             this.cards[j] = x;
         }
-    }
-
-    numberOfCards() {
-        return this.cards.length;
     }
 
     getCards() {

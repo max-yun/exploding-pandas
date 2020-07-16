@@ -1,30 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import '../css/playArea.css'
 
-function PlayArea(props) {
-    const drop = e => {
-        e.preventDefault();
-        const cardID = e.dataTransfer.getData('cardID');
-        const card = document.getElementById(cardID);
-        card.style.display = 'block';
-
-        e.target.appendChild(card);
-    }
-
-    const dragOver = e => {
-        e.preventDefault();
-    }
-
-    return (
-        <div id={props.id}
-            className={props.className}
-            onDrop={drop}
-            onDragOver={dragOver}
-        >
+const PlayArea = React.forwardRef((props, ref) => (
+    <div id={'play-area'}>
+        <div ref={ref} id={'play-pile'}>
             { props.children }
         </div>
-    )
-}
+    </div>
+));
 
 export default PlayArea;

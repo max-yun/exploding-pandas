@@ -1,0 +1,14 @@
+ul {
+    text-align: center;
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+li:last-child {
+    margin-right: 0;
+}

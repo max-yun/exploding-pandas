@@ -1,0 +1,20 @@
+p {
+    margin: 0;
+    padding: 5px 0 5px 0;
+}
+
+.sidebar {
+    flex: 0.5;
+    align-self: flex-start;
+}
+
+.sidecard {
+    padding: 0 5px 0 5px;
+    border: 1px solid gray;
+    /*box-shadow: inset 0 0 3px black;*/
+}
+
+.sidecard:hover {
+    border: 2px solid red;
+    cursor: pointer;
+}

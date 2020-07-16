@@ -1,29 +1,37 @@
-import { drawCard } from '../game';
+import { Client } from 'boardgame.io/client';
+import { Game } from '../game';
+// import { drawCard, playCard } from '../game';
 
-it('should draw card', () => {
-    const G = {
-        deck: [1, 2, 3, 4, 5, 6],
-        players: {
-            '0': {
-                hand: []
+it('Basic tests', () => {
+    const BasicGame = {
+        ...Game,
+        setup: () => ({
+            deck: ['skip', 'reverse', 'regular'],
+            players: {
+                '0': {
+                    hand: [],
+                    alive: true
+                },
+                '1': {
+                    hand: [],
+                    alive: true
+                }
             },
-            '1': {
-                hand: []
-            }
-        }
+            lastCard: null,
+        }),
     }
 
-    drawCard(G, { currentPlayer: '0'});
+    const client = Client({
+        game: BasicGame,
+    });
 
-    expect(G).toEqual({
-        deck: [1, 2, 3, 4, 5],
-        players: {
-            '0': {
-                hand: [6]
-            },
-            '1': {
-                hand: []
-            }
-        }
-    })
-})
+    client.moves.drawCard();
+    client.moves.drawCard();
+    client.moves.playCard('skip-0');
+
+    const { G, ctx } = client.store.getState();
+
+    expect(G.players['0'].hand).toEqual([]);
+    expect(G.players['1'].hand).toEqual(['reverse']);
+    expect(ctx.currentPlayer).toEqual('1');
+});

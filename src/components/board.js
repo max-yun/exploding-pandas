@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import '../css/board.css';
 
-export function Board(props) {
+function Board(props) {
     return (
-        <div>
-            <button onClick={props.onClick} id="draw-card">End Turn and Draw Card</button>
+        <div className={'board'}>
             {props.children}
+            <button onClick={props.onClick} id="draw-card">End Turn and Draw Card</button>
         </div>
     )
 }
@@ -14,3 +14,5 @@ export function Board(props) {
 Board.propTypes = {
     onClick: PropTypes.func
 }
+
+export default Board;
