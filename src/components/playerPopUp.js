@@ -7,7 +7,7 @@ function PlayerPopUp(props) {
     return (
         <Modal
             show={props.show}
-            onHide={props.hide}
+            onHide={props.onHide}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             backdrop={"static"}
@@ -16,13 +16,13 @@ function PlayerPopUp(props) {
         >
             <Modal.Header style={{margin: '0 auto', borderBottom: 0}}>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Target player
+                    Use attack card on:
                 </Modal.Title>
             </Modal.Header>
             <PlayerCards
                 players={props.players}
-                hide={props.hide}
-                attack={props.attack}
+                onHide={props.onHide}
+                target={props.target}
             />
         </Modal>
     );
@@ -31,7 +31,8 @@ function PlayerPopUp(props) {
 export default PlayerPopUp;
 
 PlayerCards.propTypes = {
+    show: PropTypes.bool,
+    onHide: PropTypes.func,
     players: PropTypes.object,
-    hide: PropTypes.func,
     attack: PropTypes.func,
 }

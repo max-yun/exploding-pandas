@@ -1,5 +1,3 @@
-// Contains all card functions that don't target a player
-
 export function playRegular() {
 
 }

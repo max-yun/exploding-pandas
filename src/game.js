@@ -9,42 +9,72 @@ export function drawCard(G, ctx) {
     ctx.events.endTurn();
 }
 
-export function playCard(G, ctx, cardID, target=null) {
-    if (target != null) {
-        playTargetCard(G, ctx, cardID, target);
-    } else {
-        let currentPlayer = ctx.currentPlayer;
-        // Cards are, by convention, named according to
-        // their type and position in hand, eg. 'regular-0'.
-        cardID = cardID.split('-');
-        const card = cardID[0];
-        const index = cardID[1];
-        switch(card) {
-            case 'regular':
-                playRegular();
-                break;
-            case 'skip':
-                playSkip(ctx);
-                break;
-            case 'shuffle':
-                playShuffle(G);
-                break;
-            case 'reverse':
-                playReverse(ctx);
-                break;
-            default:
-                break;
-        }
-        G.lastCard = card;
-        // Deletes the card at the given index.
-        G.players[currentPlayer].hand.splice(index, 1);
+export function playCard(G, ctx, cardID) {
+    let currentPlayer = ctx.currentPlayer;
+    // Cards are, by convention, named according to
+    // their type and position in hand, eg. 'regular-0'.
+    cardID = cardID.split('-');
+    const card = cardID[0];
+    const index = cardID[1];
+    switch(card) {
+        case 'regular':
+            playRegular();
+            break;
+        case 'skip':
+            playSkip(ctx);
+            break;
+        case 'shuffle':
+            playShuffle(G);
+            break;
+        case 'reverse':
+            playReverse(ctx);
+            break;
+        // This will be the default case for all targeting cards
+        default:
+            break;
     }
+    G.lastCard = card;
+    // Deletes the card at the given index.
+    G.players[currentPlayer].hand.splice(index, 1);
 }
 
-function playTargetCard(G, ctx, cardType, target) {
-    if (cardType === 'action') {
-
+// Activates effect of card that was set after modal prompt
+export function playTargetedCard(G, ctx) {
+    const card = G.lastCard;
+    const target = G.target;
+    switch (card) {
+        case 'attack':
+            G.players[target].hand.push(G.deck.pop());
+            break;
+        case 'steal':
+            break;
+        default:
+            break;
     }
+    G.target = null;
+}
+
+// Sets player up as target, for modal prompt to play 'nope'
+export function setTargetPlayer(G, ctx, target) {
+    G.target = target;
+    let targetObject = {};
+    targetObject[target] = { stage: 'nope' }
+    ctx.events.setActivePlayers({
+        value: targetObject,
+    });
+}
+
+export function handleNope(G, ctx, played=false) {
+    if (played) {
+        let hand = G.players[G.target].hand;
+        let index = hand.indexOf('nope');
+        hand.splice(index, 1);
+        G.lastCard = 'nope';
+        G.target = null;
+    } else {
+        playTargetedCard();
+    }
+    ctx.events.endStage();
 }
 
 export const Game = {
@@ -69,15 +99,22 @@ export const Game = {
             },
         },
         lastCard: null,
+        target: null,
     }),
-    moves: { drawCard, playCard },
+    moves: { drawCard, playCard, playTargetedCard, setTargetPlayer },
     turn: {
         order: TurnOrder.DEFAULT,
         stages: {
-            attacked: {
-                moves: { drawCard, playCard }
-            }
-        }
+            nope: {
+                moves: { handleNope }
+            },
+            attack1: {
+
+            },
+            attack2: {
+
+            },
+        },
     }
 }
 

@@ -1,15 +1,16 @@
 #play-area {
     display: flex;
-    flex: 4;
+    flex: 3;
     align-items: center;
+    justify-content: center;
 }
 
 #play-pile {
     border: 2px solid #F3F3F3;
-    margin-left: 25%;
     width: 150px;
     height: 150px;
     display: flex;
     align-items: center;
     position: relative;
 }
+

@@ -4,7 +4,7 @@ p {
 }
 
 .sidebar {
-    flex: 0.5;
+    flex: 1;
     align-self: flex-start;
 }
 

@@ -7,9 +7,10 @@ import { playerID } from '../index';
 
 function PlayerCards(props) {
     function handleClick(e) {
-        props.hide();
-        props.attack(e.target.value);
+        props.target(e.target.value);
+        props.onHide();
     }
+
     const playerCards = Object.keys(props.players)
         .filter(player => player !== playerID)
         .map((player, index) =>
@@ -32,5 +33,5 @@ export default PlayerCards;
 
 PlayerCards.propTypes = {
     players: PropTypes.object,
-    hide: PropTypes.func,
+    onHide: PropTypes.func,
 }

@@ -4,47 +4,77 @@ import Board from '../components/board';
 import Hand from '../components/hand';
 import PlayAreaContainer from './playAreaContainer';
 import PlayerSidecardContainer from './playerSidecardContainer';
+import GameLoggerContainer from './gameLoggerContainer';
 import PlayerPopUp from '../components/playerPopUp';
+import NopePopUp from '../components/nopePopUp';
 
 class BoardContainer extends React.Component {
     constructor(props) {
         super(props);
         this.drawCard = this.drawCard.bind(this);
         this.playCard = this.playCard.bind(this);
-        this.playAttackCard = this.playAttackCard.bind(this);
-        this.removeTarget = this.removeTarget.bind(this);
-        this.state = { targetPlayer: null, modalTarget: false };
+        this.removeTargetingState = this.removeTargetingState.bind(this);
+        this.setTargetPlayer = this.setTargetPlayer.bind(this);
+        this.handleNope = this.handleNope.bind(this);
+        this.state = { targetPlayer: null, modalTarget: false, messages: ['Game has begun.'] };
     }
 
     drawCard() {
         this.props.moves.drawCard();
+        if (this.isActive()) {
+            this.addLog(this.props.ctx.currentPlayer + ' drew a card and ended turn.');
+        }
     }
 
     playCard(cardID) {
-        if (this.props.ctx.currentPlayer !== playerID) {
+        if (!this.isActive()) {
             // TODO: make fancier. Maybe just a big notice at the top indicating turn
             console.log('Not your turn!');
             return null;
         }
-        if (cardID.includes('attack')) {
-            this.setTarget();
-        }
         this.props.moves.playCard(cardID);
+        this.addLog(`${this.props.ctx.currentPlayer} played a ${cardID.split('-')[0]} + card.`);
+        if (cardID.includes('attack')) {
+            this.setTargetingState();
+        }
     }
 
-    setTarget() {
+    setTargetingState() {
         this.setState({ modalTarget: true});
     }
 
-    playAttackCard(target) {
-        const hand = this.props.G.players[target].hand;
-        hand.push(this.props.G.deck.pop());
-        hand.push(this.props.G.deck.pop());
-        // this.props.moves.playCard('attack', target);
+    removeTargetingState() {
+        this.setState({modalTarget: false});
     }
 
-    removeTarget() {
-        this.setState({modalTarget: false});
+    handleNope(played) {
+        this.props.moves.handleNope(played);
+        if (played) {
+            this.addLog(`${this.props.G.target} played a nope card!`);
+        } else {
+            this.addLog(`${this.props.G.target} took it like a champ.`);
+        }
+    }
+
+    setTargetPlayer(target) {
+        this.props.moves.setTargetPlayer(target);
+        if (this.isActive()) {
+            // may need to be target.name
+            this.addLog(`${this.props.ctx.currentPlayer} targeted ${target}.`);
+        }
+    }
+
+    addLog(message) {
+       this.setState((prevState) => ({
+           messages: [
+               ...prevState.messages,
+               message
+           ]
+       }));
+    }
+
+    isActive() {
+        return this.props.ctx.currentPlayer === playerID;
     }
 
     render() {
@@ -52,9 +82,16 @@ class BoardContainer extends React.Component {
             <Board onClick={this.drawCard}>
                 <PlayerPopUp
                     show={this.state.modalTarget}
-                    hide={this.removeTarget}
+                    onHide={this.removeTargetingState}
                     players={this.props.G.players}
-                    attack={this.playAttackCard}
+                    target={this.setTargetPlayer}
+                />
+                <NopePopUp
+                    show={this.props.G.target === playerID}
+                    onHide={this.handleNope}
+                    card={this.props.G.lastCard}
+                    player={this.props.ctx.currentPlayer}
+                    disabled={!this.props.G.players[playerID].hand.includes('nope')}
                 />
                 <div className={'main'}>
                     <PlayerSidecardContainer
@@ -64,12 +101,15 @@ class BoardContainer extends React.Component {
                         playCard={this.playCard}
                         lastCard={this.props.G.lastCard}
                     />
+                    <GameLoggerContainer
+                        messages={this.state.messages}
+                    />
                 </div>
                 <Hand
                     hand={this.props.G.players[playerID].hand}
                 />
             </Board>
-        )
+        );
     }
 }
 

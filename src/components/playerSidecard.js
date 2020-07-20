@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import '../css/sidecard.css';
+import '../css/playerSidecard.css';
 
 export const PlayerSidecard = (props) => {
     return (
