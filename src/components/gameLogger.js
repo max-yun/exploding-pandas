@@ -4,6 +4,8 @@ import '../css/gameLogger.css';
 
 export const GameLogger = (props) => {
     return (
-        <ul className={'log'}>{props.messages}</ul>
+        <div className={'logger'}>
+            <ul id={'log-list'}>{props.messages}</ul>
+        </div>
     )
 }

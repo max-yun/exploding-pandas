@@ -5,9 +5,7 @@ class GameLoggerContainer extends React.Component {
     render() {
         const log = this.props.messages.map((message, index) =>
             <li key={index}>
-                <p id={message + '-' + index}>
-                    {message}
-                </p>
+                {message}
             </li>
         )
         return <GameLogger messages={log}/>

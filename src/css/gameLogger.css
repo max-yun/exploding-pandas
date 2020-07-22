@@ -1,8 +1,18 @@
-.log {
+.logger {
     flex: 1;
-    text-align: left;
+    display: flex;
+    flex-direction: column-reverse;
     border: 1px solid gray;
     height: 300px;
     max-height: 300px;
     overflow-y: scroll;
+}
+
+#log-list {
+    text-align: left;
+    margin-left: 10px;
+}
+
+#log-list li {
+    display: block;
 }

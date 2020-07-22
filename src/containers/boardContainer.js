@@ -16,14 +16,11 @@ class BoardContainer extends React.Component {
         this.removeTargetingState = this.removeTargetingState.bind(this);
         this.setTargetPlayer = this.setTargetPlayer.bind(this);
         this.handleNope = this.handleNope.bind(this);
-        this.state = { targetPlayer: null, modalTarget: false, messages: ['Game has begun.'] };
+        this.state = { targetPlayer: null, modalTarget: false };
     }
 
     drawCard() {
         this.props.moves.drawCard();
-        if (this.isActive()) {
-            this.addLog(this.props.ctx.currentPlayer + ' drew a card and ended turn.');
-        }
     }
 
     playCard(cardID) {
@@ -33,7 +30,6 @@ class BoardContainer extends React.Component {
             return null;
         }
         this.props.moves.playCard(cardID);
-        this.addLog(`${this.props.ctx.currentPlayer} played a ${cardID.split('-')[0]} + card.`);
         if (cardID.includes('attack')) {
             this.setTargetingState();
         }
@@ -49,28 +45,10 @@ class BoardContainer extends React.Component {
 
     handleNope(played) {
         this.props.moves.handleNope(played);
-        if (played) {
-            this.addLog(`${this.props.G.target} played a nope card!`);
-        } else {
-            this.addLog(`${this.props.G.target} took it like a champ.`);
-        }
     }
 
     setTargetPlayer(target) {
         this.props.moves.setTargetPlayer(target);
-        if (this.isActive()) {
-            // may need to be target.name
-            this.addLog(`${this.props.ctx.currentPlayer} targeted ${target}.`);
-        }
-    }
-
-    addLog(message) {
-       this.setState((prevState) => ({
-           messages: [
-               ...prevState.messages,
-               message
-           ]
-       }));
     }
 
     isActive() {
@@ -102,7 +80,7 @@ class BoardContainer extends React.Component {
                         lastCard={this.props.G.lastCard}
                     />
                     <GameLoggerContainer
-                        messages={this.state.messages}
+                        messages={this.props.G.messages}
                     />
                 </div>
                 <Hand

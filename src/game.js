@@ -4,9 +4,16 @@ import { playRegular, playSkip, playShuffle, playReverse } from './helpers';
 
 export function drawCard(G, ctx) {
     let currentPlayer = ctx.currentPlayer;
+    let playerObject = G.players[currentPlayer];
     const card = G.deck.pop();
-    G.players[currentPlayer].hand.push(card);
-    ctx.events.endTurn();
+    playerObject.hand.push(card);
+    G.messages.push(`${currentPlayer} drew a card.\n`)
+    playerObject.cardsToDraw--;
+    if (playerObject.cardsToDraw <= 0) {
+        playerObject.cardsToDraw = 1;
+        G.messages.push(`${currentPlayer} safely ended their turn.\n`)
+        ctx.events.endTurn();
+    }
 }
 
 export function playCard(G, ctx, cardID) {
@@ -33,18 +40,26 @@ export function playCard(G, ctx, cardID) {
         default:
             break;
     }
+    G.messages.push(`${ctx.currentPlayer} played a ${card} card.`);
     G.lastCard = card;
     // Deletes the card at the given index.
     G.players[currentPlayer].hand.splice(index, 1);
 }
 
 // Activates effect of card that was set after modal prompt
-export function playTargetedCard(G, ctx) {
+function playTargetedCard(G, ctx) {
     const card = G.lastCard;
     const target = G.target;
+    const initPlayer = G.players[ctx.currentPlayer];
+    const targetPlayer = G.players[target];
     switch (card) {
         case 'attack':
-            G.players[target].hand.push(G.deck.pop());
+            ctx.events.endTurn({ next: target });
+            // Add however many cards the initiator had to draw to the target's draw count.
+            // This allows attack cards to stack upon one another.
+            targetPlayer.cardsToDraw = initPlayer.cardsToDraw * 2;
+            // But reset the cardsToDraw for the initiator.
+            initPlayer.cardsToDraw = 1;
             break;
         case 'steal':
             break;
@@ -57,6 +72,7 @@ export function playTargetedCard(G, ctx) {
 // Sets player up as target, for modal prompt to play 'nope'
 export function setTargetPlayer(G, ctx, target) {
     G.target = target;
+    G.messages.push(`${ctx.currentPlayer} targeted ${target}.`);
     let targetObject = {};
     targetObject[target] = { stage: 'nope' }
     ctx.events.setActivePlayers({
@@ -71,8 +87,10 @@ export function handleNope(G, ctx, played=false) {
         hand.splice(index, 1);
         G.lastCard = 'nope';
         G.target = null;
+        G.messages.push(`${G.target} played a nope card!`);
     } else {
-        playTargetedCard();
+        G.messages.push(`${G.target} took it like a champ.`);
+        playTargetedCard(G, ctx);
     }
     ctx.events.endStage();
 }
@@ -82,37 +100,36 @@ export const Game = {
         deck: new Deck().getCards(),
         players: {
             '0': {
-                hand: [],
-                alive: true
+                hand: ['defuse'],
+                alive: true,
+                cardsToDraw: 1
             },
             '1': {
-                hand: [],
-                alive: true
+                hand: ['defuse'],
+                alive: true,
+                cardsToDraw: 1
             },
             '2': {
-                hand: [],
-                alive: true
+                hand: ['defuse'],
+                alive: true,
+                cardsToDraw: 1
             },
             '3': {
-                hand: [],
-                alive: true
+                hand: ['defuse'],
+                alive: true,
+                cardsToDraw: 1
             },
         },
         lastCard: null,
         target: null,
+        messages: ['Game has begun.'],
     }),
-    moves: { drawCard, playCard, playTargetedCard, setTargetPlayer },
+    moves: { drawCard, playCard, setTargetPlayer },
     turn: {
         order: TurnOrder.DEFAULT,
         stages: {
             nope: {
                 moves: { handleNope }
-            },
-            attack1: {
-
-            },
-            attack2: {
-
             },
         },
     }
