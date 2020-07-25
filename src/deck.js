@@ -1,7 +1,7 @@
 export default class Deck {
     constructor() {
         this.cards = this.initDeck();
-        this.shuffle();
+        // this.shuffle();
     }
 
     initDeck() {
@@ -13,7 +13,8 @@ export default class Deck {
         }
 
         // addCards(40, 'regular');
-        addCards(10, 'attack');
+        addCards(4, 'attack');
+        addCards(1, 'bomb');
 
         return deck;
     }

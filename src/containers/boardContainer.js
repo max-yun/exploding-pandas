@@ -7,6 +7,7 @@ import PlayerSidecardContainer from './playerSidecardContainer';
 import GameLoggerContainer from './gameLoggerContainer';
 import PlayerPopUp from '../components/playerPopUp';
 import NopePopUp from '../components/nopePopUp';
+import ExplodePopUp from '../components/explodePopUp';
 
 class BoardContainer extends React.Component {
     constructor(props) {
@@ -16,6 +17,8 @@ class BoardContainer extends React.Component {
         this.removeTargetingState = this.removeTargetingState.bind(this);
         this.setTargetPlayer = this.setTargetPlayer.bind(this);
         this.handleNope = this.handleNope.bind(this);
+        this.handleDefuse = this.handleDefuse.bind(this);
+        this.acceptFate = this.acceptFate.bind(this);
         this.state = { targetPlayer: null, modalTarget: false };
     }
 
@@ -43,12 +46,20 @@ class BoardContainer extends React.Component {
         this.setState({modalTarget: false});
     }
 
+    setTargetPlayer(target) {
+        this.props.moves.setTargetPlayer(target);
+    }
+
     handleNope(played) {
         this.props.moves.handleNope(played);
     }
 
-    setTargetPlayer(target) {
-        this.props.moves.setTargetPlayer(target);
+    handleDefuse(position) {
+        this.props.moves.handleDefuse(position);
+    }
+
+    acceptFate() {
+        this.props.moves.acceptFate(playerID);
     }
 
     isActive() {
@@ -63,6 +74,14 @@ class BoardContainer extends React.Component {
                     onHide={this.removeTargetingState}
                     players={this.props.G.players}
                     target={this.setTargetPlayer}
+                />
+                <ExplodePopUp
+                    show={this.props.G.exploding === playerID}
+                    canDefuse={this.props.G.players[playerID].hand.includes('defuse')}
+                    deckSize={this.props.G.deck.length}
+                    onClick={this.handleDefuse}
+                    // TODO: IMPLEMENT THIS SHIT
+                    onHide={this.acceptFate}
                 />
                 <NopePopUp
                     show={this.props.G.target === playerID}
