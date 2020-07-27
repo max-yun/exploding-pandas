@@ -5,7 +5,7 @@ import '../css/card.css';
 export const GameCard = (props) => {
     if (props.card) {
         return (
-            <img src={require(`../images/${props.card}.svg`)}
+            <img src={require(`../images/${props.card}.png`)}
                  alt={props.id}
                  style={{
                      width: '100%',

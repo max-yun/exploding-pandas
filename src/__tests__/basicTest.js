@@ -1,6 +1,5 @@
 import { Client } from 'boardgame.io/client';
 import { Game } from '../game';
-// import { drawCard, playCard } from '../game';
 
 it('Basic tests', () => {
     const BasicGame = {
@@ -10,14 +9,20 @@ it('Basic tests', () => {
             players: {
                 '0': {
                     hand: [],
+                    cardsToDraw: 1,
                     alive: true
                 },
                 '1': {
                     hand: [],
+                    cardsToDraw: 1,
                     alive: true
                 }
             },
             lastCard: null,
+            target: null,
+            messages: ['Game has begun.'],
+            losers: [],
+            exploding: null,
         }),
     }
 

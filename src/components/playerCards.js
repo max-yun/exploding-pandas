@@ -12,7 +12,7 @@ function PlayerCards(props) {
     }
 
     const playerCards = Object.keys(props.players)
-        .filter(player => player !== playerID)
+        .filter(player => player !== playerID && props.players[player].alive)
         .map((player, index) =>
         <Card key={player + index} className="text-center" style={{marginBottom: 15}}>
             <Card.Body>

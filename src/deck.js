@@ -13,8 +13,9 @@ export default class Deck {
         }
 
         // addCards(40, 'regular');
-        addCards(4, 'attack');
-        addCards(1, 'bomb');
+        addCards(1, 'attack');
+        addCards(1, 'defuse');
+        addCards(5, 'future');
 
         return deck;
     }

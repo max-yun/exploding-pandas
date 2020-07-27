@@ -1,12 +1,13 @@
 import Deck from './deck';
 import { TurnOrder } from 'boardgame.io/core';
-import { playRegular, playSkip, playShuffle, playReverse } from './helpers';
+
+let reversed = false;
 
 export function drawCard(G, ctx) {
     let currentPlayer = ctx.currentPlayer;
     let playerObject = G.players[currentPlayer];
     const card = G.deck.pop();
-    G.messages.push(`${currentPlayer} drew a card.\n`)
+    G.messages.push(`${currentPlayer} drew a card.`)
     if (card === 'bomb') {
         G.messages.push(`${currentPlayer} drew an exploding panda!`);
         G.exploding = currentPlayer;
@@ -27,7 +28,7 @@ export function drawCard(G, ctx) {
         playerObject.cardsToDraw--;
         if (playerObject.cardsToDraw <= 0) {
             playerObject.cardsToDraw = 1;
-            G.messages.push(`${currentPlayer} safely ended their turn.\n`)
+            G.messages.push(`${currentPlayer} safely ended their turn.`)
             customEndTurn(G, ctx);
         }
     }
@@ -35,23 +36,40 @@ export function drawCard(G, ctx) {
 
 export function playCard(G, ctx, cardID) {
     let currentPlayer = ctx.currentPlayer;
+    let playerObject = G.players[currentPlayer];
     // Cards are, by convention, named according to
     // their type and position in hand, eg. 'regular-0'.
     cardID = cardID.split('-');
     const card = cardID[0];
     const index = cardID[1];
     switch(card) {
+        case 'defuse':
+            // TODO: Add this to warning messages
+            console.log('This card will automatically be played if you draw an Exploding Panda.');
+            return;
         case 'regular':
-            playRegular();
             break;
         case 'skip':
-            playSkip(ctx);
+            playerObject.cardsToDraw--;
+            if (playerObject.cardsToDraw <= 0) {
+                playerObject.cardsToDraw = 1;
+                customEndTurn(G, ctx);
+            }
             break;
         case 'shuffle':
-            playShuffle(G);
+            G.deck = shuffle(G);
             break;
         case 'reverse':
-            playReverse(ctx);
+            reversed = true;
+            playerObject.cardsToDraw--;
+            if (playerObject.cardsToDraw <= 0) {
+                playerObject.cardsToDraw = 1;
+                customEndTurn(G, ctx);
+            }
+            break;
+        case 'future':
+            let end = G.deck.length;
+            G.future = [G.deck[end - 1], G.deck[end - 2], G.deck[end - 3]];
             break;
         // This will be the default case for all targeting cards
         default:
@@ -91,8 +109,8 @@ export function handleNope(G, ctx, played=false) {
         let index = hand.indexOf('nope');
         hand.splice(index, 1);
         G.lastCard = 'nope';
-        G.target = null;
         G.messages.push(`${G.target} played a nope card!`);
+        G.target = null;
     } else {
         G.messages.push(`${G.target} took it like a champ.`);
         playTargetedCard(G, ctx);
@@ -103,6 +121,7 @@ export function handleNope(G, ctx, played=false) {
 export function acceptFate(G, ctx, currentPlayer) {
     G.exploding = null;
     G.losers.push(currentPlayer);
+    G.players[currentPlayer].alive = false;
     customEndTurn(G, ctx);
 }
 
@@ -122,6 +141,11 @@ function playTargetedCard(G, ctx) {
             initPlayer.cardsToDraw = 1;
             break;
         case 'steal':
+            let targetHand = targetPlayer.hand;
+            let randomIndex = Math.random() * targetHand.length;
+            let randomCard = targetHand[randomIndex];
+            targetHand.splice(randomIndex, 1);
+            initPlayer.hand.push(randomCard);
             break;
         default:
             break;
@@ -129,16 +153,38 @@ function playTargetedCard(G, ctx) {
     G.target = null;
 }
 
-function customEndTurn(G, ctx, lost=false) {
+function customEndTurn(G, ctx) {
     let currentPlayer = parseInt(ctx.currentPlayer);
     let losers = G.losers;
-    for (let i = currentPlayer + 1; i < currentPlayer + 4; i++) {
-        let nextPlayer = (i % 4).toString();
-        if (!losers.includes(nextPlayer)) {
-            ctx.events.endTurn({ next: nextPlayer });
-            break;
+    if (reversed) {
+        for (let i = currentPlayer - 1; i > currentPlayer - 4; i--) {
+            let nextPlayer = (i % 4).toString();
+            if (!losers.includes(nextPlayer)) {
+                ctx.events.endTurn({ next: nextPlayer });
+                break;
+            }
+        }
+    } else {
+        for (let i = currentPlayer + 1; i < currentPlayer + 4; i++) {
+            let nextPlayer = (i % 4).toString();
+            if (!losers.includes(nextPlayer)) {
+                ctx.events.endTurn({ next: nextPlayer });
+                break;
+            }
         }
     }
+}
+
+function shuffle(G) {
+    let cards = G.deck;
+    let j, x, i;
+    for (i = cards.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = cards[i];
+        cards[i] = cards[j];
+        cards[j] = x;
+    }
+    return cards;
 }
 
 function gameOver(G) {
@@ -151,19 +197,23 @@ export const Game = {
         players: {
             '0': {
                 hand: ['defuse'],
-                cardsToDraw: 1
+                cardsToDraw: 1,
+                alive: true,
             },
             '1': {
                 hand: ['defuse'],
-                cardsToDraw: 1
+                cardsToDraw: 1,
+                alive: true,
             },
             '2': {
                 hand: ['defuse'],
-                cardsToDraw: 1
+                cardsToDraw: 1,
+                alive: true,
             },
             '3': {
                 hand: ['defuse'],
-                cardsToDraw: 1
+                cardsToDraw: 1,
+                alive: true,
             },
         },
         lastCard: null,
@@ -171,6 +221,7 @@ export const Game = {
         messages: ['Game has begun.'],
         losers: [],
         exploding: null,
+        future: [],
     }),
     moves: { drawCard, playCard, setTargetPlayer, acceptFate },
     turn: {

@@ -8,6 +8,7 @@ import GameLoggerContainer from './gameLoggerContainer';
 import PlayerPopUp from '../components/playerPopUp';
 import NopePopUp from '../components/nopePopUp';
 import ExplodePopUp from '../components/explodePopUp';
+import CardPopUp from '../components/cardPopUp';
 
 class BoardContainer extends React.Component {
     constructor(props) {
@@ -15,11 +16,12 @@ class BoardContainer extends React.Component {
         this.drawCard = this.drawCard.bind(this);
         this.playCard = this.playCard.bind(this);
         this.removeTargetingState = this.removeTargetingState.bind(this);
+        this.removeFutureState = this.removeFutureState.bind(this);
         this.setTargetPlayer = this.setTargetPlayer.bind(this);
         this.handleNope = this.handleNope.bind(this);
         this.handleDefuse = this.handleDefuse.bind(this);
         this.acceptFate = this.acceptFate.bind(this);
-        this.state = { targetPlayer: null, modalTarget: false };
+        this.state = { targetPlayer: null, modalTarget: false, future: false };
     }
 
     drawCard() {
@@ -33,8 +35,10 @@ class BoardContainer extends React.Component {
             return null;
         }
         this.props.moves.playCard(cardID);
-        if (cardID.includes('attack')) {
+        if (cardID.includes('attack') || cardID.includes('steal')) {
             this.setTargetingState();
+        } else if (cardID.includes('future')) {
+            this.setFutureState();
         }
     }
 
@@ -44,6 +48,14 @@ class BoardContainer extends React.Component {
 
     removeTargetingState() {
         this.setState({modalTarget: false});
+    }
+
+    setFutureState() {
+        this.setState({ future: true});
+    }
+
+    removeFutureState() {
+        this.setState({future: false});
     }
 
     setTargetPlayer(target) {
@@ -80,7 +92,6 @@ class BoardContainer extends React.Component {
                     canDefuse={this.props.G.players[playerID].hand.includes('defuse')}
                     deckSize={this.props.G.deck.length}
                     onClick={this.handleDefuse}
-                    // TODO: IMPLEMENT THIS SHIT
                     onHide={this.acceptFate}
                 />
                 <NopePopUp
@@ -90,6 +101,11 @@ class BoardContainer extends React.Component {
                     player={this.props.ctx.currentPlayer}
                     disabled={!this.props.G.players[playerID].hand.includes('nope')}
                 />
+                <CardPopUp
+                    show={this.state.future}
+                    onHide={this.removeFutureState}
+                    cards={this.props.G.future}
+                    />
                 <div className={'main'}>
                     <PlayerSidecardContainer
                         players={this.props.G.players}
