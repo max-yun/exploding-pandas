@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { PlayerSidecard } from '../components/playerSidecard';
 import { playerID } from '../index';
+import Card from 'react-bootstrap/Card';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 class PlayerSidecardContainer extends React.Component {
     render() {
@@ -16,7 +18,11 @@ class PlayerSidecardContainer extends React.Component {
             </div>
         )
         return (
-            <div className={'sidebar'}>{ players }</div>
+            <Card style={{ width: '18rem', border: '0' }}>
+                <ListGroup variant="flush">
+                    {players}
+                </ListGroup>
+            </Card>
         )
     }
 }
