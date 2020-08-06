@@ -8,7 +8,6 @@ import { playerID } from '../index';
 function PlayerCards(props) {
     function handleClick(e) {
         props.target(e.target.value);
-        props.onHide();
     }
 
     const playerCards = Object.keys(props.players)
@@ -33,5 +32,5 @@ export default PlayerCards;
 
 PlayerCards.propTypes = {
     players: PropTypes.object,
-    onHide: PropTypes.func,
+    target: PropTypes.func,
 }

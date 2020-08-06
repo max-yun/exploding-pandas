@@ -18,7 +18,7 @@ class PlayerSidecardContainer extends React.Component {
             </div>
         )
         return (
-            <Card style={{ width: '18rem', border: '0' }}>
+            <Card style={{ width: '18rem', border: '0', flex: '1' }}>
                 <ListGroup variant="flush">
                     {players}
                 </ListGroup>

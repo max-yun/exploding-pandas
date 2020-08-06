@@ -6,13 +6,16 @@ import '../css/hand.css';
 class Hand extends React.Component {
     render() {
         const hand = this.props.hand.map((card, index) =>
-            <li key={index}>
+            <li
+                className={'game-card-container'}
+                key={index}>
                 <GameCardContainer card={card}
-                                   id={card + '-' + index}/>
+                                   id={card + '-' + index}
+                />
             </li>
         )
         return (
-            <ul className={'hand'}>{hand}</ul>
+            <ul id={'hand'}>{hand}</ul>
         )
     }
 }

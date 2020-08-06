@@ -6,35 +6,64 @@ canvas {
     margin: 100px auto 0;
 }
 
-/*button {*/
-/*    box-shadow: inset 0px 39px 0px -24px #e67a73;*/
-/*    background: #e4685d linear-gradient(to bottom, #e4685d 5%, #eb675e 100%);*/
-/*    border-radius: 4px;*/
-/*    border: 1px solid #ffffff;*/
-/*    display: inline-block;*/
-/*    cursor: pointer;*/
-/*    color: #ffffff;*/
-/*    font-family: Arial, serif;*/
-/*    font-size: 15px;*/
-/*    padding: 6px 15px;*/
-/*    text-decoration: none;*/
-/*    text-shadow: 0px 1px 0px #b23e35;*/
-/*}*/
-/*button:hover {*/
-/*    background: #eb675e linear-gradient(to bottom, #eb675e 5%, #e4685d 100%);*/
-/*}*/
-/*button:active {*/
-/*    position: relative;*/
-/*    top: 1px;*/
-/*}*/
-
-.main {
+#main {
     display: flex;
     margin-top: 100px;
+    margin-bottom: 100px;
 }
 
 #draw-card {
     display: block;
-    margin: 20px auto 0;
+    border: 1px solid black;
+    border-radius: 20%;
+    height: 50px;
+    margin-left: 20px;
+    color: white;
+    background-color: red;
 }
 
+#draw-card:hover {
+    background-color: #fe6161;
+}
+
+#bottom {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+}
+
+#bottom-left {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+#bottom-right {
+    flex: 1;
+}
+
+#hand {
+    display: flex;
+    flex: 3;
+    overflow-x: hidden;
+    padding-right: 10px;
+}
+
+.game-card-container {
+    flex: 1 0 0;
+    overflow-x: hidden;
+    position:relative;
+    transition:transform .2s ease-out;
+}
+
+.game-card-container:last-child {
+    overflow-x: visible;
+}
+
+.game-card-container:hover {
+    transform: translate(5px, 0px);
+    z-index: 5000;
+    overflow-x: visible;
+}

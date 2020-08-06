@@ -5,6 +5,7 @@ import Hand from '../components/hand';
 import PlayAreaContainer from './playAreaContainer';
 import PlayerSidecardContainer from './playerSidecardContainer';
 import GameLoggerContainer from './gameLoggerContainer';
+import RegularPopUp from '../components/regularPopUp';
 import PlayerPopUp from '../components/playerPopUp';
 import NopePopUp from '../components/nopePopUp';
 import ExplodePopUp from '../components/explodePopUp';
@@ -15,13 +16,12 @@ class BoardContainer extends React.Component {
         super(props);
         this.drawCard = this.drawCard.bind(this);
         this.playCard = this.playCard.bind(this);
-        this.removeTargetingState = this.removeTargetingState.bind(this);
-        this.removeFutureState = this.removeFutureState.bind(this);
         this.setTargetPlayer = this.setTargetPlayer.bind(this);
+        this.removeFutureState = this.removeFutureState.bind(this);
         this.handleNope = this.handleNope.bind(this);
         this.handleDefuse = this.handleDefuse.bind(this);
         this.acceptFate = this.acceptFate.bind(this);
-        this.state = { targetPlayer: null, modalTarget: false, future: false };
+        this.state = { targetPlayer: null, modalTarget: false, future: false, regular: false };
     }
 
     drawCard() {
@@ -35,19 +35,9 @@ class BoardContainer extends React.Component {
             return null;
         }
         this.props.moves.playCard(cardID);
-        if (cardID.includes('attack') || cardID.includes('steal')) {
-            this.setTargetingState();
-        } else if (cardID.includes('future')) {
+        if (cardID.includes('future')) {
             this.setFutureState();
         }
-    }
-
-    setTargetingState() {
-        this.setState({ modalTarget: true});
-    }
-
-    removeTargetingState() {
-        this.setState({modalTarget: false});
     }
 
     setFutureState() {
@@ -58,8 +48,8 @@ class BoardContainer extends React.Component {
         this.setState({future: false});
     }
 
-    setTargetPlayer(target) {
-        this.props.moves.setTargetPlayer(target);
+    setTargetPlayer(target, val=0, card=null) {
+        this.props.moves.setTargetPlayer(target, val, card);
     }
 
     handleNope(played) {
@@ -80,12 +70,18 @@ class BoardContainer extends React.Component {
 
     render() {
         return (
-            <Board onClick={this.drawCard}>
+            <Board>
+                <RegularPopUp
+                    show={this.props.G.regularInitiator === playerID}
+                    regular={this.props.G.regular}
+                    target={this.setTargetPlayer}
+                    players={this.props.G.players}
+                />
                 <PlayerPopUp
-                    show={this.state.modalTarget}
-                    onHide={this.removeTargetingState}
+                    show={this.props.G.initiator === playerID}
                     players={this.props.G.players}
                     target={this.setTargetPlayer}
+                    card={this.props.G.lastCard}
                 />
                 <ExplodePopUp
                     show={this.props.G.exploding === playerID}
@@ -106,7 +102,7 @@ class BoardContainer extends React.Component {
                     onHide={this.removeFutureState}
                     cards={this.props.G.future}
                     />
-                <div className={'main'}>
+                <div id={'main'}>
                     <PlayerSidecardContainer
                         players={this.props.G.players}
                     />
@@ -118,9 +114,15 @@ class BoardContainer extends React.Component {
                         messages={this.props.G.messages}
                     />
                 </div>
-                <Hand
-                    hand={this.props.G.players[playerID].hand}
-                />
+                <div id={'bottom'}>
+                    <div id={'bottom-left'}>
+                        <button onClick={this.drawCard} id="draw-card">End Turn</button>
+                    </div>
+                    <Hand
+                        hand={this.props.G.players[playerID].hand}
+                    />
+                    <div id={'bottom-right'}></div>
+                </div>
             </Board>
         );
     }

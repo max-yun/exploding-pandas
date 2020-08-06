@@ -6,7 +6,6 @@ ul {
 
 li {
     display: inline-block;
-    margin-right: 1rem;
 }
 
 li:last-child {

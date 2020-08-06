@@ -7,7 +7,3 @@ p {
     flex: 1;
     align-self: flex-start;
 }
-
-.sidecard:hover {
-    cursor: pointer;
-}

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import '../css/card.css';
+import '../css/gameCard.css';
 
 export const GameCard = (props) => {
     if (props.card) {

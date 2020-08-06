@@ -9,6 +9,7 @@
     "boardgame.io": "^0.39.14",
     "bootstrap": "^4.5.0",
     "esm": "^3.2.25",
+    "indefinite": "^2.3.2",
     "jquery": "^1.9.1",
     "lodash": "^4.17.19",
     "react": "^16.13.1",
