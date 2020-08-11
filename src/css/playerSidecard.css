@@ -7,3 +7,17 @@ p {
     flex: 1;
     align-self: flex-start;
 }
+
+.sidecard {
+    border-radius: 0 10px 10px 0;
+}
+
+.list-group-item.active {
+    background-color: #f9c74f !important;
+    border-color: #f9C74f !important;
+}
+
+.dead-player {
+    background-color: #577590 !important;
+    border-color: #577590 !important;
+}

@@ -15,8 +15,8 @@ function RegularPopUp(props) {
         let val = parseInt(e.target.value);
         setFirst(false);
         setSecond(true);
+        setValue(val);
         if (val === 3) {
-            setValue(val);
             setThird(true);
         }
     }
@@ -57,8 +57,9 @@ function RegularPopUp(props) {
                 <Modal.Body>
                     If you play one more of these cards, you can take a random card
                     from an opponent's hand. If you play two more of these cards, you
-                    can specify which card you want to take from an opponent. These cards
-                    will automatically be played from your hand based on your choice.
+                    can specify which card you want to take from an opponent (but there's
+                    no guarantee that they have that card). These cards will automatically
+                    be played from your hand based on your choice.
                 </Modal.Body>
                 <Modal.Footer style={{justifyContent: 'center'}}>
                     <Button variant="primary" value={2} onClick={handleClick}>Play one more</Button>

@@ -15,7 +15,6 @@ export const GameClient = Client({
     numPlayers: 4,
     board: BoardContainer,
     multiplayer: SocketIO({ server: 'localhost:8080' }),
-    debug: false,
 });
 
 export class App extends React.Component {

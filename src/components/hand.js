@@ -23,5 +23,6 @@ class Hand extends React.Component {
 export default Hand;
 
 Hand.propTypes = {
-    hand: PropTypes.array.isRequired
+    hand: PropTypes.array.isRequired,
+    active: PropTypes.bool
 }

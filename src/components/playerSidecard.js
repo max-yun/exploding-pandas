@@ -4,15 +4,26 @@ import '../css/playerSidecard.css';
 import ListGroup from 'react-bootstrap/ListGroup';
 
 export const PlayerSidecard = (props) => {
-    return (
-        <ListGroup.Item>
-            <p style={{margin: '0'}}>Player: { props.playerID }</p>
-            <p style={{margin: '0'}}>Number of cards in hand: { props.numOfCards }</p>
-        </ListGroup.Item>
-    )
+    if (props.active) {
+        return (
+            <ListGroup.Item active>
+                <p style={{margin: '0'}}>Player: { props.name }</p>
+                <p style={{margin: '0'}}>Number of cards in hand: { props.numOfCards }</p>
+            </ListGroup.Item>
+        )
+    } else {
+        return (
+            <ListGroup.Item className={props.alive ? '' : 'dead-player'}>
+                <p style={{margin: '0'}}>Player: { props.name }</p>
+                <p style={{margin: '0'}}>Number of cards in hand: { props.numOfCards }</p>
+            </ListGroup.Item>
+        )
+    }
 }
 
 PlayerSidecard.propTypes = {
-    playerID: PropTypes.string,
-    numOfCards: PropTypes.number
+    name: PropTypes.string,
+    numOfCards: PropTypes.number,
+    active: PropTypes.bool,
+    alive: PropTypes.bool,
 }

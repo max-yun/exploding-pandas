@@ -1,18 +1,50 @@
-.logger {
+#logger {
     flex: 1;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     border: 1px solid gray;
     height: 300px;
     max-height: 300px;
-    overflow-y: scroll;
+}
+
+#log-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    background: #f9c74f;
+    color: white;
+    border-bottom: 1px solid black;
 }
 
 #log-list {
-    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
     margin-left: 10px;
+    flex: 5;
+    text-align: left;
+    overflow-y: scroll;
 }
 
 #log-list li {
     display: block;
+}
+
+#log-send-container {
+    border-top: 1px solid black;
+    padding: 10px;
+    z-index: 1;
+}
+
+#log-send {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#log-input {
+    width: 75%;
+    margin: 0;
 }

@@ -1,69 +1,76 @@
-canvas {
-    border: 1px solid #555;
-    width: 600px;
-    height: 400px;
-    display: block;
-    margin: 100px auto 0;
+.body {
+    overflow: hidden;
+    position: fixed;
+}
+
+#turn-order {
+    text-align: center;
+    margin-top: 2rem;
 }
 
 #main {
     display: flex;
-    margin-top: 100px;
-    margin-bottom: 100px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 #draw-card {
-    display: block;
-    border: 1px solid black;
-    border-radius: 20%;
-    height: 50px;
-    margin-left: 20px;
+    border: #f94144;
     color: white;
-    background-color: red;
+    background-color: #f94144;
 }
 
 #draw-card:hover {
-    background-color: #fe6161;
+    background-color: #ce2e30;
+}
+
+#alert {
+    text-align: center;
+    font-style: oblique;
+    color: #f94144;
+    font-size: 20px;
+}
+
+#alert-text {
+    opacity: 1;
+}
+
+span {
+    transition: all 300ms ease-in-out;
+    opacity: 0;
+    will-change: opacity;
 }
 
 #bottom {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     position: fixed;
-    bottom: 0;
+    bottom: 5rem;
     width: 100%;
-    white-space: nowrap;
+    /*white-space: nowrap;*/
 }
 
-#bottom-left {
-    display: flex;
-    align-items: center;
-    flex: 1;
+#inactive {
+    opacity: 0.4;
+    pointer-events: none;
 }
-
-#bottom-right {
-    flex: 1;
-}
-
-#hand {
-    display: flex;
-    flex: 3;
-    overflow-x: hidden;
-    padding-right: 10px;
-}
-
 .game-card-container {
-    flex: 1 0 0;
-    overflow-x: hidden;
-    position:relative;
-    transition:transform .2s ease-out;
+    position: relative;
+    transition: 0.3s ease-out;
+    display: flex;
+    border-radius: 10px;
+    box-shadow: -5px 0 5px #e6e2e2;
 }
 
-.game-card-container:last-child {
-    overflow-x: visible;
+.game-card-container:not(:first-child) {
+    margin-left: -50px;
 }
 
 .game-card-container:hover {
-    transform: translate(5px, 0px);
-    z-index: 5000;
-    overflow-x: visible;
+    transform: translateY(-50px);
+}
+
+.game-card-container:hover ~ .game-card-container {
+    transform: translateX(50px);
 }
