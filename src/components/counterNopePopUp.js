@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { generateNopeText } from '../generateText';
 
-function NopePopUp(props) {
+function CounterNopePopUp(props) {
     function clickYes() {
         props.onHide(true);
     }
@@ -24,32 +23,25 @@ function NopePopUp(props) {
         >
             <Modal.Header style={{margin: '0 auto', borderBottom: 0}}>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    {props.player} has targeted you!
+                    Your card was Noped!
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {props.show ? generateNopeText(props.card, props.player, props.count, props.steal) : ''}
-                <br />
-                <br />
-                If you play a Nope card, you can prevent this action.
+                This will negate your previous action.
+                If you play a Nope card, you can reverse the effect of their Nope.
             </Modal.Body>
             <Modal.Footer style={{justifyContent: 'center'}}>
-                <Button variant="primary" onClick={clickYes} disabled={props.disabled}>Say nope!</Button>
-                <Button variant="primary" onClick={clickNo}>Let it happen</Button>
+                <Button variant="primary" onClick={clickYes} disabled={props.disabled}>Nope their nope!</Button>
+                <Button variant="primary" onClick={clickNo}>Fine, whatever...</Button>
             </Modal.Footer>
         </Modal>
     );
 }
 
-export default NopePopUp;
+export default CounterNopePopUp;
 
-NopePopUp.propTypes = {
+CounterNopePopUp.propTypes = {
     show: PropTypes.bool,
     onHide: PropTypes.func,
-    card: PropTypes.string,
-    player: PropTypes.string,
-    count: PropTypes.number,
-    steal: PropTypes.string,
     disabled: PropTypes.bool,
-    counterNope: PropTypes.bool,
 }

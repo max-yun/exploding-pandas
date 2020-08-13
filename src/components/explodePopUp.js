@@ -101,4 +101,5 @@ ExplodePopUp.propTypes = {
     onHide: PropTypes.func,
     player: PropTypes.string,
     card: PropTypes.string,
+    canDefuse: PropTypes.bool,
 }

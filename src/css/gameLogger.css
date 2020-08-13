@@ -19,7 +19,7 @@
 
 #log-list {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: flex-start;
     margin-top: 10px;
     margin-left: 10px;

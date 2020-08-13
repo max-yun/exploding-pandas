@@ -5,11 +5,7 @@ import Hand from '../components/hand';
 import PlayAreaContainer from './playAreaContainer';
 import PlayerSidecardContainer from './playerSidecardContainer';
 import GameLoggerContainer from './gameLoggerContainer';
-import RegularPopUp from '../components/regularPopUp';
-import PlayerPopUp from '../components/playerPopUp';
-import NopePopUp from '../components/nopePopUp';
-import ExplodePopUp from '../components/explodePopUp';
-import CardPopUp from '../components/cardPopUp';
+import PopUpRouterContainer from './popUpRouterContainer';
 import Button from 'react-bootstrap/Button';
 
 class BoardContainer extends React.Component {
@@ -60,6 +56,8 @@ class BoardContainer extends React.Component {
             }
         } else if (cardID.includes('Defuse')) {
             this.activateAlert('A Defuse card will only be played if you draw an Exploding Panda.');
+        } else if (cardID.includes('Nope')) {
+            this.activateAlert('A Nope card can only be played if you are targeted by someone.');
         } else if (cardID.includes('future')) {
             this.setFutureState();
         }
@@ -96,46 +94,36 @@ class BoardContainer extends React.Component {
     render() {
         let turnHeader = 'Your Turn';
         let currentPlayer = this.props.ctx.currentPlayer;
+        let players = this.props.G.players;
         let playerObject = this.props.G.players[currentPlayer];
         if (currentPlayer !== playerID) {
             turnHeader = this.props.G.players[currentPlayer].name + '\'s Turn';
         }
-
+        let lastCard = this.props.G.playedCards[this.props.G.playedCards.length - 1];
         return (
             <Board>
-                <RegularPopUp
-                    show={this.props.G.regularInitiator === playerID}
-                    regular={this.props.G.regular}
-                    target={this.setTargetPlayer}
-                    players={this.props.G.players}
-                />
-                <PlayerPopUp
-                    show={this.props.G.initiator === playerID}
-                    players={this.props.G.players}
-                    target={this.setTargetPlayer}
-                    card={this.props.G.lastCard}
-                />
-                <ExplodePopUp
-                    show={this.props.G.exploding === playerID}
-                    canDefuse={playerObject.hand.includes('defuse')}
-                    deckSize={this.props.G.deck.length}
-                    onClick={this.handleDefuse}
-                    onHide={this.acceptFate}
-                />
-                <NopePopUp
-                    show={this.props.G.target === playerID}
-                    onHide={this.handleNope}
-                    card={this.props.G.lastCard}
-                    player={currentPlayer}
+                <PopUpRouterContainer
+                    showRegular={this.props.G.regularInitiator === playerID}
+                    showPlayers={this.props.G.initiator === playerID}
+                    showNope={this.props.G.target === playerID && !this.props.G.counterNope}
+                    showExplode={this.props.G.exploding === playerID}
+                    showFuture={this.state.future}
+                    showCounterNope={this.props.G.counterNope === playerID}
+                    players={players}
                     count={this.props.G.regular}
-                    steal={this.props.G.steal}
-                    disabled={!playerObject.hand.includes('nope')}
+                    target={this.setTargetPlayer}
+                    playerObject={playerObject}
+                    targetPlayerObject={players[this.props.G.target]}
+                    handleNope={this.handleNope}
+                    currentPlayer={this.props.ctx.currentPlayer}
+                    deckSize={this.props.G.deck.length}
+                    handleDefuse={this.handleDefuse}
+                    acceptFate={this.acceptFate}
+                    lastCard={lastCard}
+                    stealCard={this.props.G.steal}
+                    removeFutureState={this.removeFutureState}
+                    futureCards={this.props.G.future}
                 />
-                <CardPopUp
-                    show={this.state.future}
-                    onHide={this.removeFutureState}
-                    cards={this.props.G.future}
-                    />
                 <h1 id={'turn-order'}>{turnHeader}</h1>
                 <div id={'main'}>
                     <PlayerSidecardContainer
@@ -144,7 +132,7 @@ class BoardContainer extends React.Component {
                     />
                     <PlayAreaContainer
                         playCard={this.playCard}
-                        lastCard={this.props.G.lastCard}
+                        lastCard={lastCard}
                     />
                     <GameLoggerContainer
                         messages={this.props.G.messages}

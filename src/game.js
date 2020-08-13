@@ -1,6 +1,7 @@
 import Deck from './deck';
 import { TurnOrder } from 'boardgame.io/core';
 import { generatePlayedText } from './generateText';
+let indefinite = require('indefinite');
 
 let reversed = false;
 let numPlayers = 2;
@@ -9,13 +10,13 @@ export function drawCard(G, ctx) {
     let currentPlayer = ctx.currentPlayer;
     let playerObject = G.players[currentPlayer];
     const card = G.deck.pop();
-    G.messages.push(`${playerObject.name} drew a card.`)
+    G.messages.unshift(`${playerObject.name} drew a card.`)
     if (card === 'Bomb') {
-        G.messages.push(`${playerObject.name} drew an exploding panda!`);
+        G.messages.unshift(`${playerObject.name} drew an exploding panda!`);
         G.exploding = currentPlayer;
         let defuseIndex = playerObject.hand.indexOf('defuse');
         if (defuseIndex >= 0) {
-            G.messages.push(`${playerObject.name} defused the bomb and put it back somewhere!`);
+            G.messages.unshift(`${playerObject.name} defused the bomb and put it back somewhere!`);
             // Remove the defuse card from hand
             let defuseObject = {};
             defuseObject[currentPlayer] = { stage: 'defusing' }
@@ -23,14 +24,14 @@ export function drawCard(G, ctx) {
                 value: defuseObject,
             });
         } else {
-            G.messages.push(`${playerObject.name} doesn't have a defuse card... RIP.`);
+            G.messages.unshift(`${playerObject.name} doesn't have a defuse card... RIP.`);
         }
     } else {
         playerObject.hand.push(card);
         playerObject.cardsToDraw--;
         if (playerObject.cardsToDraw <= 0) {
             playerObject.cardsToDraw = 1;
-            G.messages.push(`${playerObject.name} safely ended their turn.`)
+            G.messages.unshift(`${playerObject.name} safely ended their turn.`)
             customEndTurn(G, ctx);
         }
     }
@@ -51,7 +52,7 @@ export function playCard(G, ctx, cardID) {
         played = playSpecialCard(G, ctx, card, playerObject);
     }
     if (played) {
-        G.lastCard = card;
+        G.playedCards.push(card);
         removeCard(playerObject, card);
     }
 }
@@ -66,14 +67,16 @@ export function setTargetPlayer(G, ctx, target, val=0, card=null) {
     // Handling for case of playing regular cards
     if (val === 2) {
         removeCard(playerObject, card);
-        G.messages.push(generatePlayedText(G.lastCard, playerObject.name, 2));
+        G.messages.unshift(generatePlayedText(getLastCard(G), playerObject.name, 2));
     } else if (val === 3) {
         removeCard(playerObject, card);
         removeCard(playerObject, card);
         G.steal = card;
-        G.messages.push(generatePlayedText(G.lastCard, playerObject.name, 3));
+        G.messages.unshift(generatePlayedText(getLastCard(G), playerObject.name, 3));
     }
-    G.messages.push(`${playerObject.name} targeted ${targetPlayerObject.name}.`);
+    if (!G.counterNope) {
+        G.messages.unshift(`${playerObject.name} targeted ${targetPlayerObject.name}.`);
+    }
     G.regular = val;
     let targetObject = {};
     targetObject[target] = { stage: 'nope' }
@@ -84,7 +87,7 @@ export function setTargetPlayer(G, ctx, target, val=0, card=null) {
 
 export function handleDefuse(G, ctx, position) {
     removeCard(G.players[ctx.currentPlayer], 'Defuse');
-    G.lastCard = 'Defuse';
+    G.playedCards.push('Defuse');
     G.deck.splice(G.deck.length - position, 0, 'Bomb');
     G.exploding = null;
     ctx.events.endStage();
@@ -92,17 +95,37 @@ export function handleDefuse(G, ctx, position) {
 }
 
 export function handleNope(G, ctx, played=false) {
-    let targetName = G.players[G.target];
-    if (played) {
-        removeCard(G.players[ctx.currentPlayer], 'Nope');
-        G.lastCard = 'nope';
-        G.messages.push(generatePlayedText('Nope', targetName));
-        G.target = null;
+    if (G.counterNope) {
+        if (played) {
+            let playerObject = G.players[ctx.currentPlayer];
+            removeCard(playerObject, 'Nope');
+            G.playedCards.push('Nope');
+            G.messages.unshift(`${playerObject.name} countered with their own Nope!`);
+            setTargetPlayer(G, ctx, G.target);
+        } else {
+            G.target = null;
+        }
+        G.counterNope = null;
+        ctx.events.endStage();
     } else {
-        G.messages.push(`${targetName} didn't stop the action.`);
-        playTargetedCard(G, ctx);
+        let targetPlayer = G.players[G.target];
+        if (played) {
+            removeCard(targetPlayer, 'Nope');
+            G.playedCards.push('Nope');
+            G.messages.unshift(generatePlayedText('Nope', targetPlayer.name));
+            G.counterNope = ctx.currentPlayer;
+            ctx.events.endStage();
+            let playerObject = {};
+            playerObject[ctx.currentPlayer] = { stage: 'nope' }
+            ctx.events.setActivePlayers({
+                value: playerObject,
+            });
+        } else {
+            G.messages.unshift(`${targetPlayer.name} didn't stop the action.`);
+            playTargetedCard(G, ctx);
+            ctx.events.endStage();
+        }
     }
-    ctx.events.endStage();
 }
 
 export function acceptFate(G, ctx, currentPlayer) {
@@ -125,7 +148,6 @@ function playRegularCard(G, ctx, card, player) {
     } else {
         G.regular = 3;
     }
-    // G.messages.push(`${ctx.currentPlayer} played a ${x.join(' ')} card.`);
     return true;
 }
 
@@ -155,18 +177,21 @@ function playSpecialCard(G, ctx, card, playerObject) {
             let end = G.deck.length;
             G.future = [G.deck[end - 1], G.deck[end - 2], G.deck[end - 3]];
             break;
+        case 'Nope':
+            return;
         // This will be the default case for all targeting cards
         default:
             G.initiator = ctx.currentPlayer;
             break;
     }
-    G.messages.push(`${playerObject.name} played a ${card} card.`);
+    G.messages.unshift(`${playerObject.name} played ${indefinite(card)} card.`);
     return true;
 }
 
 // Activates effect of card that was set after modal prompt
 function playTargetedCard(G, ctx) {
-    const card = G.lastCard;
+    const card = getLastCard(G);
+    console.log(card);
     const target = G.target;
     const initPlayer = G.players[ctx.currentPlayer];
     const targetPlayer = G.players[target];
@@ -195,7 +220,7 @@ function playTargetedCard(G, ctx) {
                 let randomCard = targetHand[randomIndex];
                 targetHand.splice(randomIndex, 1);
                 initHand.push(randomCard);
-                G.messages.push(`${initPlayer.name} stole a card from ${targetPlayer.name}.`);
+                G.messages.unshift(`${initPlayer.name} stole a card from ${targetPlayer.name}.`);
             } else if (G.regular === 3) {
                 let initHand = initPlayer.hand;
                 let targetHand = targetPlayer.hand;
@@ -203,9 +228,9 @@ function playTargetedCard(G, ctx) {
                 if (index !== -1) {
                     targetHand.splice(index, 1);
                     initHand.push(G.steal);
-                    G.messages.push(`${initPlayer.name} stole a ${G.steal} card from ${targetPlayer.name}.`);
+                    G.messages.unshift(`${initPlayer.name} stole a ${G.steal} card from ${targetPlayer.name}.`);
                 } else {
-                    G.messages.push(`${targetPlayer.name} didn't have a ${G.steal} card.`);
+                    G.messages.unshift(`${targetPlayer.name} didn't have a ${G.steal} card.`);
                 }
                 G.steal = null;
             }
@@ -220,13 +245,13 @@ export const Game = {
         deck: new Deck().getCards(),
         players: {
             '0': {
-                hand: ['Regular_Giant_Panda'],
+                hand: ['Regular_Giant_Panda', 'Nope'],
                 cardsToDraw: 1,
                 alive: true,
                 name: 'Jeremy',
             },
             '1': {
-                hand: ['Regular_Giant_Panda', 'Regular_Giant_Panda', 'Attack', 'Shuffle'],
+                hand: ['Regular_Giant_Panda', 'Regular_Giant_Panda', 'Attack', 'Shuffle', 'Nope'],
                 cardsToDraw: 1,
                 alive: true,
                 name: 'Alex',
@@ -244,11 +269,12 @@ export const Game = {
             //     name: 'Ariana',
             // },
         },
-        lastCard: null,
+        playedCards: [],
         messages: ['Game has begun.'],
         losers: [],
         initiator: null,
         target: null,
+        counterNope: null,
         exploding: null,
         future: [],
         regular: 0,
@@ -323,3 +349,10 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
+function getLastCard(G) {
+    for (let i = G.playedCards.length - 1; i >= 0; i--) {
+        if (G.playedCards[i] !== 'Nope') {
+            return G.playedCards[i];
+        }
+    }
+}
