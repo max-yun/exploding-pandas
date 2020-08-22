@@ -1,52 +1,52 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RegularPopUp from '../components/regularPopUp';
-import PlayerPopUp from '../components/playerPopUp';
-import NopePopUp from '../components/nopePopUp';
-import ExplodePopUp from '../components/explodePopUp';
-import CardPopUp from '../components/cardPopUp';
-import CounterNopePopUp from '../components/counterNopePopUp';
+import PopUpRegular from '../components/popUpRegular';
+import PopUpPlayer from '../components/popUpPlayer';
+import PopUpNope from '../components/popUpNope';
+import PopUpExplode from '../components/popUpExplode';
+import PopUpCard from '../components/popUpCard';
+import PopUpNopeCounter from '../components/popUpNopeCounter';
 
 export default function PopUpRouterContainer(props) {
     if (props.showRegular) {
-        return <RegularPopUp
+        return <PopUpRegular
             show={true}
             regular={props.count}
             target={props.target}
             players={props.players}
         />
     } else if (props.showPlayers) {
-        return <PlayerPopUp
+        return <PopUpPlayer
             show={true}
             target={props.target}
             players={props.players}
             card={props.lastCard}
             />
     } else if (props.showNope) {
-        return <NopePopUp
+        return <PopUpNope
             show={true}
             onHide={props.handleNope}
             showCounter={props.showCounterNope}
             card={props.lastCard}
-            player={props.currentPlayer}
+            player={props.playerObject}
             count={props.count}
             steal={props.stealCard}
             disabled={!props.targetPlayerObject.hand.includes('Nope')}
         />
     } else if (props.showCounterNope) {
-        return <CounterNopePopUp
+        return <PopUpNopeCounter
             show={true}
             onHide={props.handleNope}
             disabled={!props.playerObject.hand.includes('Nope')}
             />
     } if (props.showFuture) {
-        return <CardPopUp
+        return <PopUpCard
             show={true}
             onHide={props.removeFutureState}
             cards={props.futureCards}
             />
-    } else if (props.showExploding) {
-        return <ExplodePopUp
+    } else if (props.showExplode) {
+        return <PopUpExplode
             show={true}
             canDefuse={props.playerObject.hand.includes('Defuse')}
             deckSize={props.deckSize}

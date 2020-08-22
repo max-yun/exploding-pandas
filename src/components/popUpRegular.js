@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import PlayerCards from './playerCards';
 
-function RegularPopUp(props) {
+function PopUpRegular(props) {
     const [showFirst, setFirst] = useState(true);
     const [showSecond, setSecond] = useState(false);
     const [showThird, setThird] = useState(false);
@@ -108,9 +108,9 @@ function RegularPopUp(props) {
     );
 }
 
-export default RegularPopUp;
+export default PopUpRegular;
 
-RegularPopUp.propTypes = {
+PopUpRegular.propTypes = {
     show: PropTypes.bool,
     regular: PropTypes.number,
     target: PropTypes.func,

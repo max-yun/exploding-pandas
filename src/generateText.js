@@ -12,7 +12,7 @@ export function generatePlayedText(card, player, count=0) {
         return `${player} played ${indefinite(card)} card.`
     }
 }
-export function generateNopeText(card, player, count=0, cardToSteal=null) {
+export function generateNopeText(card, player, count=0, cardToSteal=null, numCards=2) {
     if (card) {
         if (card.includes('Regular')) {
             if (count === 2) {
@@ -26,9 +26,7 @@ export function generateNopeText(card, player, count=0, cardToSteal=null) {
         }
         switch (card) {
             case 'Attack':
-                break;
-            case 'Nope':
-                break;
+                return `${player} played an Attack card. This will force you to take ${numCards} turns.`;
         }
     }
     return null;

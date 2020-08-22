@@ -1,0 +1,14 @@
+#home {
+    display: flex;
+    margin: 10rem 40rem 0;
+    justify-content: center;
+}
+
+#home-form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+button {
+}

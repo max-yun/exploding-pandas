@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
-class ExplodePopUp extends React.Component {
+class PopUpExplode extends React.Component {
     constructor(props) {
         super(props);
         this.state = { replace: 0 }
@@ -94,9 +94,9 @@ class ExplodePopUp extends React.Component {
     }
 }
 
-export default ExplodePopUp;
+export default PopUpExplode;
 
-ExplodePopUp.propTypes = {
+PopUpExplode.propTypes = {
     show: PropTypes.bool,
     onHide: PropTypes.func,
     player: PropTypes.string,

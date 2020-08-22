@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import { generateNopeText } from '../generateText';
 
-function CounterNopePopUp(props) {
+function PopUpNope(props) {
     function clickYes() {
         props.onHide(true);
     }
@@ -23,25 +24,33 @@ function CounterNopePopUp(props) {
         >
             <Modal.Header style={{margin: '0 auto', borderBottom: 0}}>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Your card was Noped!
+                    {props.player.name} has targeted you!
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                This will negate your previous action.
-                If you play a Nope card, you can reverse the effect of their Nope.
+                {props.show ? generateNopeText(props.card, props.player.name, props.count,
+                    props.steal, props.player.cardsToDraw * 2) : ''}
+                <br />
+                <br />
+                If you play a Nope card, you can prevent this action.
             </Modal.Body>
             <Modal.Footer style={{justifyContent: 'center'}}>
-                <Button variant="primary" onClick={clickYes} disabled={props.disabled}>Nope their nope!</Button>
-                <Button variant="primary" onClick={clickNo}>Fine, whatever...</Button>
+                <Button variant="primary" onClick={clickYes} disabled={props.disabled}>Say nope!</Button>
+                <Button variant="primary" onClick={clickNo}>Let it happen</Button>
             </Modal.Footer>
         </Modal>
     );
 }
 
-export default CounterNopePopUp;
+export default PopUpNope;
 
-CounterNopePopUp.propTypes = {
+PopUpNope.propTypes = {
     show: PropTypes.bool,
     onHide: PropTypes.func,
+    card: PropTypes.string,
+    player: PropTypes.object,
+    count: PropTypes.number,
+    steal: PropTypes.string,
     disabled: PropTypes.bool,
+    counterNope: PropTypes.bool,
 }

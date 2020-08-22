@@ -5,7 +5,7 @@ import { GameCard } from './gameCard';
 import '../css/cardPopUp.css';
 import Button from 'react-bootstrap/Button';
 
-function CardPopUp(props) {
+function PopUpCard(props) {
     function handleClick() {
         props.onHide();
     }
@@ -48,8 +48,8 @@ function CardPopUp(props) {
     );
 }
 
-export default CardPopUp;
+export default PopUpCard;
 
-CardPopUp.propTypes = {
+PopUpCard.propTypes = {
 
 }

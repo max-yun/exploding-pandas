@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import GameCardContainer from "../containers/gameCardContainer";
+import GameCardContainer from '../containers/gameCardContainer';
 import '../css/hand.css';
 
 class Hand extends React.Component {

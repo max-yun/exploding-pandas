@@ -14,6 +14,7 @@ class BoardContainer extends React.Component {
         this.errorTimeout = null;
         this.drawCard = this.drawCard.bind(this);
         this.playCard = this.playCard.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
         this.activateAlert = this.activateAlert.bind(this);
         this.setTargetPlayer = this.setTargetPlayer.bind(this);
         this.removeFutureState = this.removeFutureState.bind(this);
@@ -28,6 +29,10 @@ class BoardContainer extends React.Component {
     }
 
     drawCard() {
+        if (!this.isActive()) {
+            this.activateAlert('It\'s not your turn.');
+            return null;
+        }
         this.props.moves.drawCard();
     }
 
@@ -61,6 +66,10 @@ class BoardContainer extends React.Component {
         } else if (cardID.includes('future')) {
             this.setFutureState();
         }
+    }
+
+    sendMessage(message) {
+        this.props.moves.sendMessage(message, playerID);
     }
 
     setFutureState() {
@@ -136,6 +145,7 @@ class BoardContainer extends React.Component {
                     />
                     <GameLoggerContainer
                         messages={this.props.G.messages}
+                        sendMessage={this.sendMessage}
                     />
                 </div>
                 <div id={'alert'}>

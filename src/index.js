@@ -1,21 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Client } from 'boardgame.io/react';
+import { Client } from 'boardgame.io/client';
 import { SocketIO } from 'boardgame.io/multiplayer';
+import { Lobby } from 'boardgame.io/react';
 import { DndProvider} from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Game } from './game';
+import { ExplodingPandas } from './game';
 import BoardContainer from './containers/boardContainer';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { INTERNAL_API_PORT, SERVER_PORT } from './constants';
+import Home from './home/home';
 
 export let playerID;
 
 export const GameClient = Client({
-    game: Game,
+    game: ExplodingPandas,
     numPlayers: 4,
     board: BoardContainer,
-    multiplayer: SocketIO({ server: 'localhost:8080' }),
+    multiplayer: SocketIO({ server: `localhost:${SERVER_PORT}` }),
+    debug: false
 });
+
+const importedGames = [
+    { game: ExplodingPandas, board: BoardContainer },
+];
 
 export class App extends React.Component {
     constructor(props) {
@@ -26,37 +34,12 @@ export class App extends React.Component {
     render() {
         if (this.state.playerID === null) {
             return (
-                <div>
-                    <p>Play as</p>
-                    <button onClick={() => {
-                        this.setState({ playerID: "0" });
-                        playerID = "0";
-                        }
-                    }>
-                        Player 0
-                    </button>
-                    <button onClick={() => {
-                        this.setState({ playerID: "1" });
-                        playerID = "1";
-                        }
-                    }>
-                        Player 1
-                    </button>
-                    <button onClick={() => {
-                        this.setState({ playerID: "2" });
-                        playerID = "2";
-                    }
-                    }>
-                        Player 2
-                    </button>
-                    <button onClick={() => {
-                        this.setState({ playerID: "3" });
-                        playerID = "3";
-                    }
-                    }>
-                        Player 3
-                    </button>
-                </div>
+                <Home />
+                // <Lobby
+                //     gameServer={`http://${window.location.hostname}:${SERVER_PORT}`}
+                //     lobbyServer={`http://${window.location.hostname}:${INTERNAL_API_PORT}`}
+                //     gameComponents={importedGames}
+                // />
             );
         }
         return (

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Modal from 'react-bootstrap/Modal';
 import PlayerCards from './playerCards';
 
-function PlayerPopUp(props) {
+function PopUpPlayer(props) {
     return (
         <Modal
             show={props.show}
@@ -26,7 +26,7 @@ function PlayerPopUp(props) {
     );
 }
 
-export default PlayerPopUp;
+export default PopUpPlayer;
 
 PlayerCards.propTypes = {
     show: PropTypes.bool,
