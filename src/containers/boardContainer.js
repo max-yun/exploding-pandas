@@ -1,5 +1,5 @@
 import React from 'react';
-import { playerID } from '../index';
+import { playerID } from '../app';
 import Board from '../components/board';
 import Hand from '../components/hand';
 import PlayAreaContainer from './playAreaContainer';

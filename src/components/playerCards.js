@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import CardDeck from 'react-bootstrap/CardDeck';
 import Button from 'react-bootstrap/Button';
-import { playerID } from '../index';
+import { playerID } from '../app';
 
 function PlayerCards(props) {
     function handleClick(e) {

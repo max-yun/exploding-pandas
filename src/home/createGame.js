@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { API_PORT, INTERNAL_API_PORT } from '../constants';
 
-class CreateGamePopUp extends React.Component {
+class CreateGame extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -73,9 +73,9 @@ class CreateGamePopUp extends React.Component {
     }
 }
 
-CreateGamePopUp.propTypes = {
+CreateGame.propTypes = {
     show: PropTypes.bool,
     handleClose: PropTypes.func,
 }
 
-export default CreateGamePopUp;
+export default CreateGame;

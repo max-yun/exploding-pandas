@@ -1,14 +1,15 @@
-#home {
+#base {
     display: flex;
     margin: 10rem 40rem 0;
     justify-content: center;
 }
 
-#home-form {
+#main-form {
     display: flex;
     justify-content: center;
     flex-direction: column;
 }
 
 button {
+
 }

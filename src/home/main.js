@@ -2,7 +2,7 @@ import React from 'react';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
-import CreateGamePopUp from './createGamePopUp';
+import CreateGame from './createGame';
 
 class Main extends React.Component {
     constructor(props) {
@@ -22,9 +22,9 @@ class Main extends React.Component {
 
     render() {
         return (
-            <div id={'home-form'}>
+            <div id={'main-form'}>
                 <h1>Exploding Pandas</h1>
-                <CreateGamePopUp show={this.state.show} onHide={this.handleClose} />
+                <CreateGame show={this.state.show} onHide={this.handleClose} />
                 <InputGroup className="mb-3">
                     <FormControl
                         placeholder="Username"
