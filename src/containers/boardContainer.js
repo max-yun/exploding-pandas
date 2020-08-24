@@ -1,5 +1,4 @@
 import React from 'react';
-import { playerID } from '../app';
 import Board from '../components/board';
 import Hand from '../components/hand';
 import PlayAreaContainer from './playAreaContainer';
@@ -11,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 class BoardContainer extends React.Component {
     constructor(props) {
         super(props);
+        this.playerID = this.props.playerID;
         this.errorTimeout = null;
         this.drawCard = this.drawCard.bind(this);
         this.playCard = this.playCard.bind(this);
@@ -69,7 +69,7 @@ class BoardContainer extends React.Component {
     }
 
     sendMessage(message) {
-        this.props.moves.sendMessage(message, playerID);
+        this.props.moves.sendMessage(message, this.playerID);
     }
 
     setFutureState() {
@@ -93,11 +93,11 @@ class BoardContainer extends React.Component {
     }
 
     acceptFate() {
-        this.props.moves.acceptFate(playerID);
+        this.props.moves.acceptFate(this.playerID);
     }
 
     isActive() {
-        return this.props.ctx.currentPlayer === playerID;
+        return this.props.ctx.currentPlayer === this.playerID;
     }
 
     render() {
@@ -105,19 +105,19 @@ class BoardContainer extends React.Component {
         let currentPlayer = this.props.ctx.currentPlayer;
         let players = this.props.G.players;
         let playerObject = this.props.G.players[currentPlayer];
-        if (currentPlayer !== playerID) {
+        if (currentPlayer !== this.playerID) {
             turnHeader = this.props.G.players[currentPlayer].name + '\'s Turn';
         }
         let lastCard = this.props.G.playedCards[this.props.G.playedCards.length - 1];
         return (
             <Board>
                 <PopUpRouterContainer
-                    showRegular={this.props.G.regularInitiator === playerID}
-                    showPlayers={this.props.G.initiator === playerID}
-                    showNope={this.props.G.target === playerID && !this.props.G.counterNope}
-                    showExplode={this.props.G.exploding === playerID}
+                    showRegular={this.props.G.regularInitiator === this.playerID}
+                    showPlayers={this.props.G.initiator === this.playerID}
+                    showNope={this.props.G.target === this.playerID && !this.props.G.counterNope}
+                    showExplode={this.props.G.exploding === this.playerID}
                     showFuture={this.state.future}
-                    showCounterNope={this.props.G.counterNope === playerID}
+                    showCounterNope={this.props.G.counterNope === this.playerID}
                     players={players}
                     count={this.props.G.regular}
                     target={this.setTargetPlayer}
@@ -132,6 +132,7 @@ class BoardContainer extends React.Component {
                     stealCard={this.props.G.steal}
                     removeFutureState={this.removeFutureState}
                     futureCards={this.props.G.future}
+                    playerID={this.playerID}
                 />
                 <h1 id={'turn-order'}>{turnHeader}</h1>
                 <div id={'main'}>
@@ -157,7 +158,7 @@ class BoardContainer extends React.Component {
                 <div id={'bottom'}>
                     <div id={this.props.G.target != null ? 'inactive' : ''}>
                         <Hand
-                            hand={this.props.G.players[playerID].hand}
+                            hand={this.props.G.players[this.playerID].hand}
                         />
                         <div style={{display: 'flex', justifyContent: 'center'}}>
                             <Button variant="primary" onClick={this.drawCard} id="draw-card">End Turn</Button>

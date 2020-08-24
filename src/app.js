@@ -7,9 +7,7 @@ import BoardContainer from './containers/boardContainer';
 import { SocketIO } from 'boardgame.io/multiplayer';
 import { SERVER_PORT } from './constants';
 
-export let playerID;
-
-export const GameClient = Client({
+const GameClient = Client({
     game: ExplodingPandas,
     numPlayers: 4,
     board: BoardContainer,
@@ -17,7 +15,7 @@ export const GameClient = Client({
     debug: false
 });
 
-export class App extends React.Component {
+class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = { playerID: null };
@@ -32,3 +30,5 @@ export class App extends React.Component {
         );
     }
 }
+
+export default App;

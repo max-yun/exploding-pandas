@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import CardDeck from 'react-bootstrap/CardDeck';
 import Button from 'react-bootstrap/Button';
-import { playerID } from '../app';
 
 function PlayerCards(props) {
     function handleClick(e) {
@@ -11,7 +10,7 @@ function PlayerCards(props) {
     }
 
     const playerCards = Object.keys(props.players)
-        .filter(player => player !== playerID && props.players[player].alive)
+        .filter(player => player !== props.playerID && props.players[player].alive)
         .map((player, index) =>
         <Card key={player + index} className="text-center" style={{marginBottom: 15}}>
             <Card.Body>

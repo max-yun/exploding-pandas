@@ -3,6 +3,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import CreateGame from './createGame';
+import Header from './header';
 
 class Main extends React.Component {
     constructor(props) {
@@ -22,19 +23,17 @@ class Main extends React.Component {
 
     render() {
         return (
-            <div id={'main-form'}>
-                <h1>Exploding Pandas</h1>
-                <CreateGame show={this.state.show} onHide={this.handleClose} />
-                <InputGroup className="mb-3">
-                    <FormControl
-                        placeholder="Username"
-                        aria-label="Username"
-                        aria-describedby="basic-addon1"
-                    />
-                </InputGroup>
-                <Button onClick={this.handleShow}>Create Game</Button>
-                <br />
-                <Button>Join Game</Button>
+            <div>
+                <Header />
+                <div id={'base'}>
+                    <div id={'main-form'}>
+                        <h1>Exploding Pandas</h1>
+                        <CreateGame show={this.state.show} onHide={this.handleClose} />
+                        <Button onClick={this.handleShow}>Create a game</Button>
+                        <br />
+                        <Button>Join a game</Button>
+                    </div>
+                </div>
             </div>
         );
     }

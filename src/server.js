@@ -1,6 +1,5 @@
 import { Server } from 'boardgame.io/server';
 import { ExplodingPandas } from './game';
-import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import Koa from 'koa';
 import koaBody from 'koa-body';
@@ -34,7 +33,6 @@ const serverHandle = server.run({
     },
     lobbyConfig: {
         apiPort: INTERNAL_API_PORT,
-        uuid: uuidv4,
         apiCallback: () => {
             console.log(`Internal API serving at: http://localhost:${INTERNAL_API_PORT}/`);
         },

@@ -78,4 +78,5 @@ PopUpRouterContainer.propTypes = {
     stealCard: PropTypes.string,
     removeFutureState: PropTypes.func,
     futureCards: PropTypes.array,
+    playerID: PropTypes.string,
 }

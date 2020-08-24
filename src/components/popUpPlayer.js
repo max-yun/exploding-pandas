@@ -19,6 +19,7 @@ function PopUpPlayer(props) {
                 </Modal.Title>
             </Modal.Header>
             <PlayerCards
+                playerID={props.playerID}
                 players={props.players}
                 target={props.target}
             />
