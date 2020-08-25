@@ -22,9 +22,25 @@ router.post('/create', koaBody(), async ctx => {
         });
 
     ctx.body = {
-        room: r.data.gameID,
+        gameID: r.data.gameID,
     };
 });
+
+router.post('/join', koaBody(), async ctx => {
+    const gameID = ctx.request.body.gameID;
+    const r = await axios
+        .post(`http://localhost:${INTERNAL_API_PORT}/games/${ExplodingPandas.name}/${gameID}/join`, {
+            playerID: ctx.request.body.playerID,
+            playerName: ctx.request.body.playerName,
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+    ctx.body = {
+        playerCredentials: r.data.playerCredentials,
+    };
+})
 
 const serverHandle = server.run({
     port: SERVER_PORT,

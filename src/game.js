@@ -3,10 +3,10 @@ import { TurnOrder } from 'boardgame.io/core';
 import { generatePlayedText } from './generateText';
 import { Stage } from 'boardgame.io/core';
 import { ActivePlayers } from 'boardgame.io/core';
+import { removeCard, shuffle, getRandomInt, getLastCard, getRandomHand } from './helpers';
 let indefinite = require('indefinite');
 
 let reversed = false;
-let numPlayers = 2;
 
 export function drawCard(G, ctx) {
     let currentPlayer = ctx.currentPlayer;
@@ -249,19 +249,46 @@ function playTargetedCard(G, ctx) {
     G.target = null;
 }
 
+function customEndTurn(G, ctx) {
+    let currentPlayer = parseInt(ctx.currentPlayer);
+    let numPlayers = ctx.numPlayers;
+    let losers = G.losers;
+    if (reversed) {
+        for (let i = currentPlayer - 1; i > currentPlayer - numPlayers; i--) {
+            let nextPlayer = (i % numPlayers).toString();
+            if (!losers.includes(nextPlayer)) {
+                ctx.events.endTurn({ next: nextPlayer });
+                break;
+            }
+        }
+    } else {
+        for (let i = currentPlayer + 1; i < currentPlayer + numPlayers; i++) {
+            let nextPlayer = (i % numPlayers).toString();
+            if (!losers.includes(nextPlayer)) {
+                ctx.events.endTurn({ next: nextPlayer });
+                break;
+            }
+        }
+    }
+}
+
+function gameOver(G, ctx) {
+    return G.losers.length === ctx.numPlayers;
+}
+
 export const ExplodingPandas = {
     name: 'exploding-pandas',
     setup: () => ({
         deck: new Deck().getCards(),
         players: {
             '0': {
-                hand: ['Regular_Giant_Panda', 'Nope', 'Attack'],
+                hand: getRandomHand(),
                 cardsToDraw: 1,
                 alive: true,
                 name: 'Jeremy',
             },
             '1': {
-                hand: ['Regular_Giant_Panda', 'Regular_Giant_Panda', 'Attack', 'Shuffle', 'Nope'],
+                hand: getRandomHand(),
                 cardsToDraw: 1,
                 alive: true,
                 name: 'Alex',
@@ -309,7 +336,7 @@ export const ExplodingPandas = {
     minPlayers: 2,
     maxPlayers: 4,
     endIf: (G, ctx) => {
-        if (gameOver(G)) {
+        if (gameOver(G, ctx)) {
             return { winner: ctx.currentPlayer }
         }
     }
@@ -317,57 +344,49 @@ export const ExplodingPandas = {
 
 /* HELPER FUNCTIONS */
 
-function customEndTurn(G, ctx) {
-    let currentPlayer = parseInt(ctx.currentPlayer);
-    let losers = G.losers;
-    if (reversed) {
-        for (let i = currentPlayer - 1; i > currentPlayer - numPlayers; i--) {
-            let nextPlayer = (i % numPlayers).toString();
-            if (!losers.includes(nextPlayer)) {
-                ctx.events.endTurn({ next: nextPlayer });
-                break;
-            }
-        }
-    } else {
-        for (let i = currentPlayer + 1; i < currentPlayer + numPlayers; i++) {
-            let nextPlayer = (i % numPlayers).toString();
-            if (!losers.includes(nextPlayer)) {
-                ctx.events.endTurn({ next: nextPlayer });
-                break;
-            }
-        }
-    }
-}
-
-function gameOver(G) {
-    return G.losers.length === numPlayers;
-}
-
-function removeCard(playerObject, card) {
-    let hand = playerObject.hand;
-    hand.splice(hand.indexOf(card), 1);
-}
-
-function shuffle(G) {
-    let cards = G.deck;
-    let j, x, i;
-    for (i = cards.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        x = cards[i];
-        cards[i] = cards[j];
-        cards[j] = x;
-    }
-    return cards;
-}
-
-function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-}
-
-function getLastCard(G) {
-    for (let i = G.playedCards.length - 1; i >= 0; i--) {
-        if (G.playedCards[i] !== 'Nope') {
-            return G.playedCards[i];
-        }
-    }
-}
+// function removeCard(playerObject, card) {
+//     let hand = playerObject.hand;
+//     hand.splice(hand.indexOf(card), 1);
+// }
+//
+// function shuffle(G) {
+//     let cards = G.deck;
+//     let j, x, i;
+//     for (i = cards.length - 1; i > 0; i--) {
+//         j = Math.floor(Math.random() * (i + 1));
+//         x = cards[i];
+//         cards[i] = cards[j];
+//         cards[j] = x;
+//     }
+//     return cards;
+// }
+//
+// function getRandomInt(max) {
+//     return Math.floor(Math.random() * Math.floor(max));
+// }
+//
+// function getLastCard(G) {
+//     for (let i = G.playedCards.length - 1; i >= 0; i--) {
+//         if (G.playedCards[i] !== 'Nope') {
+//             return G.playedCards[i];
+//         }
+//     }
+// }
+//
+// function getRandomHand() {
+//     let hand = ['Defuse'];
+//     hand.push(randomSample(CARDS));
+//     return hand;
+// }
+//
+// function randomSample(samples) {
+//     let sample =
+//         Math.random() *
+//         samples.reduce((sum, { weight }) => sum + weight, 0);
+//
+//     const { value } = samples.find(
+//         ({ weight }) => (sample -= weight) < 0
+//     );
+//
+//     return value;
+// }

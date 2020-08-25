@@ -17,7 +17,6 @@ class CreateGame extends React.Component {
             name: null,
             numPlayers: 2,
             public: false,
-            room: null,
         };
         this.changeName = this.changeName.bind(this);
         this.changeNumPlayers = this.changeNumPlayers.bind(this);
@@ -42,16 +41,26 @@ class CreateGame extends React.Component {
     async createGame(e) {
         e.preventDefault();
         if (this.state.name) {
-            const r = await axios
+            const createResponse = await axios
                 .post(`${this.apiBase}/create`, {
                     numPlayers: this.state.numPlayers,
                     public: this.state.public,
                 });
 
-            this.setState({ room: r.data.room });
+            const gameID = createResponse.data.gameID;
+
+            const joinResponse = await axios
+                .post(`${this.apiBase}/join`, {
+                    gameID: gameID,
+                    playerName: this.state.name,
+                    playerID: '0',
+                })
+
+            const credentials = joinResponse.data.playerCredentials;
+
             this.props.history.push({
-                pathname: `/${this.state.room}`,
-                // state: { roomID: this.state.room }
+                pathname: `/${gameID}`,
+                state: { gameID: gameID, playerCredentials: credentials }
             });
         }
     }

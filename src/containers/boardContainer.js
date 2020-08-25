@@ -109,6 +109,12 @@ class BoardContainer extends React.Component {
             turnHeader = this.props.G.players[currentPlayer].name + '\'s Turn';
         }
         let lastCard = this.props.G.playedCards[this.props.G.playedCards.length - 1];
+        if (this.props.G.gameMetadata.length < this.props.ctx.numPlayers) {
+            return <div> Waiting room. </div>
+        }
+        console.log(this.props.G.gameMetadata.length);
+        console.log(this.props.ctx.numPlayers);
+
         return (
             <Board>
                 <PopUpRouterContainer
