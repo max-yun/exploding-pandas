@@ -12,6 +12,19 @@ const GameCardContainer = (props) => {
             isDragging: !!monitor.isDragging(),
         })
     })
+    if (!props.card) {
+        return (
+            <div
+                className={'game-card'}
+                id={props.id}
+                ref={drag}
+                style={{
+                    boxShadow: '0',
+                    borderRadius: '0',
+                }}
+            />
+        )
+    }
     return (
         <div
             className={'game-card'}
@@ -19,7 +32,6 @@ const GameCardContainer = (props) => {
             ref={drag}
             style={{
                 opacity: isDragging ? 0.5 : 1,
-                margin: '0 auto',
             }}
         >
             <GameCard card={props.card}/>

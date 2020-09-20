@@ -1,5 +1,51 @@
 import { CARDS } from './constants';
 
+export function setupPlayers(numPlayers, playerName) {
+    let players = {
+        '0': {
+            hand: getRandomHand(),
+            cardsToDraw: 1,
+            alive: true,
+            name: playerName,
+        },
+        '1': {
+            hand: getRandomHand(),
+            cardsToDraw: 1,
+            alive: true,
+            name: null,
+        },
+    }
+    if (numPlayers === 3) {
+        let nextPlayer = {
+            '2': {
+                hand: getRandomHand(),
+                cardsToDraw: 1,
+                alive: true,
+                name: null,
+            }
+        }
+        players = Object.assign(nextPlayer, players);
+    }
+    else if (numPlayers === 4) {
+        let nextPlayer = {
+            '2': {
+                hand: getRandomHand(),
+                cardsToDraw: 1,
+                alive: true,
+                name: null,
+            },
+            '3': {
+                hand: getRandomHand(),
+                cardsToDraw: 1,
+                alive: true,
+                name: null,
+            }
+        }
+        players = Object.assign(nextPlayer, players);
+    }
+    return players;
+}
+
 export function removeCard(playerObject, card) {
     let hand = playerObject.hand;
     hand.splice(hand.indexOf(card), 1);
@@ -30,7 +76,8 @@ export function getLastCard(G) {
 }
 
 export function getRandomHand() {
-    let hand = ['Defuse'];
+    // let hand = ['Defuse'];
+    let hand = [];
     for (let i = 0; i < 5; i++) {
         hand.push(randomSample(CARDS));
     }

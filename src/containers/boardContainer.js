@@ -1,10 +1,11 @@
 import React from 'react';
 import Board from '../components/board';
 import Hand from '../components/hand';
+import WaitingRoom from '../components/waitingRoom';
 import PlayAreaContainer from './playAreaContainer';
 import PlayerSidecardContainer from './playerSidecardContainer';
 import GameLoggerContainer from './gameLoggerContainer';
-import PopUpRouterContainer from './popUpRouterContainer';
+import PopUpRouter from '../components/popUpRouter';
 import Button from 'react-bootstrap/Button';
 
 class BoardContainer extends React.Component {
@@ -12,6 +13,7 @@ class BoardContainer extends React.Component {
         super(props);
         this.playerID = this.props.playerID;
         this.errorTimeout = null;
+        this.startGame = this.startGame.bind(this);
         this.drawCard = this.drawCard.bind(this);
         this.playCard = this.playCard.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
@@ -26,6 +28,14 @@ class BoardContainer extends React.Component {
             alert: null,
             fading: false
         };
+    }
+
+    componentDidMount() {
+        this.props.moves.setName(this.playerID, this.props.gameMetadata[parseInt(this.playerID)].name);
+    }
+
+    startGame() {
+        this.props.moves.startGame();
     }
 
     drawCard() {
@@ -63,13 +73,17 @@ class BoardContainer extends React.Component {
             this.activateAlert('A Defuse card will only be played if you draw an Exploding Panda.');
         } else if (cardID.includes('Nope')) {
             this.activateAlert('A Nope card can only be played if you are targeted by someone.');
-        } else if (cardID.includes('future')) {
+        } else if (cardID.includes('Future')) {
             this.setFutureState();
         }
     }
 
-    sendMessage(message) {
-        this.props.moves.sendMessage(message, this.playerID);
+    sendMessage(message, nonPlayer=false) {
+        if (nonPlayer) {
+            this.props.moves.sendMessage(message);
+        } else {
+            this.props.moves.sendMessage(message, this.playerID);
+        }
     }
 
     setFutureState() {
@@ -101,34 +115,42 @@ class BoardContainer extends React.Component {
     }
 
     render() {
+        if (!this.props.G.started) {
+            return <WaitingRoom
+                gameID={this.props.gameID}
+                playerID={this.props.playerID}
+                host={this.props.playerID === '0'}
+                credentials={this.props.credentials}
+                gameMetadata={this.props.gameMetadata}
+                startGame={this.startGame}
+                messages={this.props.G.messages}
+                sendMessage={this.sendMessage}
+            />
+        }
+
+        let lastCard = this.props.G.playedCards[this.props.G.playedCards.length - 1];
         let turnHeader = 'Your Turn';
         let currentPlayer = this.props.ctx.currentPlayer;
-        let players = this.props.G.players;
         let playerObject = this.props.G.players[currentPlayer];
+        let otherPlayers = JSON.parse(JSON.stringify(this.props.G.players));
+        delete otherPlayers[this.playerID];
         if (currentPlayer !== this.playerID) {
             turnHeader = this.props.G.players[currentPlayer].name + '\'s Turn';
         }
-        let lastCard = this.props.G.playedCards[this.props.G.playedCards.length - 1];
-        if (this.props.G.gameMetadata.length < this.props.ctx.numPlayers) {
-            return <div> Waiting room. </div>
-        }
-        console.log(this.props.G.gameMetadata.length);
-        console.log(this.props.ctx.numPlayers);
-
         return (
             <Board>
-                <PopUpRouterContainer
+                <PopUpRouter
                     showRegular={this.props.G.regularInitiator === this.playerID}
                     showPlayers={this.props.G.initiator === this.playerID}
                     showNope={this.props.G.target === this.playerID && !this.props.G.counterNope}
                     showExplode={this.props.G.exploding === this.playerID}
                     showFuture={this.state.future}
                     showCounterNope={this.props.G.counterNope === this.playerID}
-                    players={players}
+                    players={otherPlayers}
                     count={this.props.G.regular}
                     target={this.setTargetPlayer}
                     playerObject={playerObject}
-                    targetPlayerObject={players[this.props.G.target]}
+                    targetPlayerObject={this.props.G.players[this.props.G.target]}
                     handleNope={this.handleNope}
                     currentPlayer={this.props.ctx.currentPlayer}
                     deckSize={this.props.G.deck.length}
@@ -139,16 +161,18 @@ class BoardContainer extends React.Component {
                     removeFutureState={this.removeFutureState}
                     futureCards={this.props.G.future}
                     playerID={this.playerID}
+                    victory={this.props.ctx.gameover && this.props.ctx.gameover.winner === this.playerID}
                 />
-                <h1 id={'turn-order'}>{turnHeader}</h1>
                 <div id={'main'}>
                     <PlayerSidecardContainer
                         players={this.props.G.players}
                         current={currentPlayer}
                     />
                     <PlayAreaContainer
+                        turnHeader={turnHeader}
                         playCard={this.playCard}
                         lastCard={lastCard}
+                        deckSize={this.props.G.deck.length}
                     />
                     <GameLoggerContainer
                         messages={this.props.G.messages}
@@ -167,7 +191,7 @@ class BoardContainer extends React.Component {
                             hand={this.props.G.players[this.playerID].hand}
                         />
                         <div style={{display: 'flex', justifyContent: 'center'}}>
-                            <Button variant="primary" onClick={this.drawCard} id="draw-card">End Turn</Button>
+                            <Button variant="secondary" onClick={this.drawCard} id="draw-card">End Turn</Button>
                         </div>
                     </div>
                 </div>

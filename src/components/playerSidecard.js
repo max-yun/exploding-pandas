@@ -7,15 +7,22 @@ export const PlayerSidecard = (props) => {
     if (props.active) {
         return (
             <ListGroup.Item active>
-                <p style={{margin: '0'}}>Player: { props.name }</p>
-                <p style={{margin: '0'}}>Number of cards in hand: { props.numOfCards }</p>
+                <div>
+                    <p>Player: { props.name }</p>
+                    <p>Number of cards in hand: { props.numOfCards }</p>
+                </div>
             </ListGroup.Item>
         )
     } else {
         return (
             <ListGroup.Item className={props.alive ? '' : 'dead-player'}>
-                <p style={{margin: '0'}}>Player: { props.name }</p>
-                <p style={{margin: '0'}}>Number of cards in hand: { props.numOfCards }</p>
+                <div>
+                    <p>Player: { props.name }</p>
+                    <p>Number of cards in hand: { props.numOfCards }</p>
+                </div>
+                    {!props.alive &&
+                    <img src={require("../images/Dead.png")} className={"dead-icon"} alt={"dead-icon"}/>
+                    }
             </ListGroup.Item>
         )
     }

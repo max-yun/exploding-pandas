@@ -5,9 +5,9 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { API_PORT, INTERNAL_API_PORT } from '../constants';
+import { API_PORT } from '../constants';
 import InputGroup from 'react-bootstrap/InputGroup';
-import FormControl from 'react-bootstrap/FormControl';
+import { setupPlayers } from '../helpers';
 import '../css/createGame.css';
 
 class CreateGame extends React.Component {
@@ -16,11 +16,11 @@ class CreateGame extends React.Component {
         this.state = {
             name: null,
             numPlayers: 2,
-            public: false,
+            unlisted: false,
         };
         this.changeName = this.changeName.bind(this);
         this.changeNumPlayers = this.changeNumPlayers.bind(this);
-        this.changePublic = this.changePublic.bind(this);
+        this.changeUnlisted = this.changeUnlisted.bind(this);
         this.createGame = this.createGame.bind(this);
         this.apiBase = (process.env.NODE_ENV === 'production') ? '/api' :
             `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
@@ -31,11 +31,11 @@ class CreateGame extends React.Component {
     }
 
     changeNumPlayers(e) {
-        this.setState({ numPlayers: e.target.value });
+        this.setState({ numPlayers: parseInt(e.target.value) });
     }
 
-    changePublic(e) {
-        this.setState({ public: e.target.value });
+    changeUnlisted(e) {
+        this.setState({ unlisted: parseInt(e.target.value) });
     }
 
     async createGame(e) {
@@ -44,7 +44,8 @@ class CreateGame extends React.Component {
             const createResponse = await axios
                 .post(`${this.apiBase}/create`, {
                     numPlayers: this.state.numPlayers,
-                    public: this.state.public,
+                    setupData: setupPlayers(this.state.numPlayers, this.state.name),
+                    unlisted: this.state.unlisted,
                 });
 
             const gameID = createResponse.data.gameID;
@@ -54,13 +55,17 @@ class CreateGame extends React.Component {
                     gameID: gameID,
                     playerName: this.state.name,
                     playerID: '0',
-                })
+                });
 
             const credentials = joinResponse.data.playerCredentials;
 
             this.props.history.push({
                 pathname: `/${gameID}`,
-                state: { gameID: gameID, playerCredentials: credentials }
+                state: {
+                    gameID: gameID,
+                    playerID: '0',
+                    credentials: credentials
+                }
             });
         }
     }
@@ -78,38 +83,36 @@ class CreateGame extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={this.createGame}>
-                        <InputGroup className="mb-3" id="name" onChange={this.changeName}>
-                            <Form.Label>Your name:</Form.Label>
-                            <FormControl
-                                placeholder="Enter here"
-                                aria-label="Name"
-                                aria-describedby="basic-addon1"
+                        <Form.Group onChange={this.changeName}>
+                            <Form.Label>Your name</Form.Label>
+                            <Form.Control
+                                placeholder="Enter name"
                                 required={true}
                             />
-                        </InputGroup>
-                        <InputGroup className="mb-3" id="numPlayers" onChange={this.changeNumPlayers}>
+                        </Form.Group>
+                        <Form.Group onChange={this.changeNumPlayers}>
                             <Form.Label>Number of players:</Form.Label>
                             <Form.Control as="select">
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
+                                <option value={2}>2</option>
+                                <option value={3}>3</option>
+                                <option value={4}>4</option>
                             </Form.Control>
-                        </InputGroup>
-                        <InputGroup id="public" onChange={this.changePublic}>
+                        </Form.Group>
+                        <InputGroup id="public" onChange={this.changeUnlisted}>
                             <Form.Label>Visible to public:</Form.Label>
                             {['radio'].map((type) => (
                                 <div key={`default-${type}`} className="mb-3">
                                     <Form.Check
                                         inline label="Yes"
                                         type={type}
-                                        value={true}
+                                        value={1}
                                         name={'public'}
                                         id={`inline-${type}-yes`}
                                     />
                                     <Form.Check
                                         inline label="No"
                                         type={type}
-                                        value={false}
+                                        value={0}
                                         name={'public'}
                                         id={`inline-${type}-no`}
                                         defaultChecked
@@ -118,7 +121,7 @@ class CreateGame extends React.Component {
                             ))}
                         </InputGroup>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={rest.onHide}>
+                            <Button variant="secondary" onClick={this.props.onHide}>
                                 Cancel
                             </Button>
                             <Button variant="primary" type={"submit"}>
@@ -134,7 +137,7 @@ class CreateGame extends React.Component {
 
 CreateGame.propTypes = {
     show: PropTypes.bool,
-    handleClose: PropTypes.func,
+    onHide: PropTypes.func,
 }
 
 export default withRouter(CreateGame);

@@ -9,15 +9,18 @@ import { SERVER_PORT } from './constants';
 import BoardContainer from './containers/boardContainer';
 import Main from './home/main';
 import About from './home/about';
-import Rules from './home/rules';
+import Cards from './home/cards';
+import HowToPlay from './home/howToPlay';
+import ErrorPage from './home/errorPage';
 import './css/main.css';
 
 export function Routes() {
     return (
         <Switch>
-            <Route exact path='/' component={Main}/>
-            <Route path='/about' component={About}/>
-            <Route path='/how-to-play' component={Rules}/>
+            <Route exact path={'/'} component={Main}/>
+            <Route path={'/about'} component={About}/>
+            <Route path={'/how-to-play'} component={HowToPlay}/>
+            <Route path={'/cards'} component={Cards}/>
             <Route path={'/:gameID'} component={App}/>
         </Switch>
     )
@@ -25,8 +28,8 @@ export function Routes() {
 
 const GameClient = Client({
     game: ExplodingPandas,
-    numPlayers: 4,
     board: BoardContainer,
+    debug: false,
     multiplayer: SocketIO({ server: `${window.location.hostname}:${SERVER_PORT}` }),
 });
 
@@ -36,19 +39,37 @@ class App extends React.Component {
         super(props);
         this.state = {
             gameID: null,
-            playerID : '1',
+            playerID: null,
+            credentials: null,
+            error: false,
         }
     }
 
     componentDidMount() {
-        this.setState({ gameID: this.props.location.state.gameID} );
+        try {
+            this.setState({ gameID: this.props.location.state.gameID });
+            this.setState({ playerID: this.props.location.state.playerID });
+            this.setState({ credentials: this.props.location.state.credentials });
+        } catch(e) {
+            this.setState({ error: true });
+        }
+
     }
 
     render() {
+        if (this.state.error) {
+            return (
+                <ErrorPage />
+            )
+        }
         return (
             <div>
                 <DndProvider backend={HTML5Backend}>
-                    <GameClient gameID={this.state.gameID} playerID={this.state.playerID} />
+                    <GameClient
+                        gameID={this.state.gameID}
+                        playerID={this.state.playerID}
+                        credentials={this.state.credentials}
+                    />
                 </DndProvider>
             </div>
         );

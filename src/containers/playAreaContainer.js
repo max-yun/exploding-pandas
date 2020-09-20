@@ -7,9 +7,8 @@ import { ItemTypes } from "../constants";
 import GameCardContainer from './gameCardContainer';
 
 function PlayAreaContainer(props) {
-    const [{ isDragging, isOver, canDrop }, drop] = useDrop({
+    const [{ isDragging}, drop] = useDrop({
         accept: ItemTypes.CARD,
-        // canDrop: () => canDropCard(),
         drop: monitor => props.playCard(monitor.id),
         collect: monitor => ({
             isOver: !!monitor.isOver(),
@@ -21,6 +20,8 @@ function PlayAreaContainer(props) {
     return (
             <PlayArea ref={drop}
                       lastCard={props.lastCard}
+                      deckSize={props.deckSize}
+                      turnHeader={props.turnHeader}
             >
                 {isDragging && (
                     <div style={{
@@ -40,7 +41,10 @@ function PlayAreaContainer(props) {
                         Drop card here
                     </div>
                 )}
-                <GameCardContainer id={'last-card'} card={props.lastCard} />
+                <GameCardContainer
+                    id={'last-card'}
+                    card={props.lastCard}
+                />
             </PlayArea>
     )
 }
@@ -48,6 +52,7 @@ function PlayAreaContainer(props) {
 export default PlayAreaContainer;
 
 PlayAreaContainer.propTypes = {
+    turnHeader: PropTypes.string,
     playCard: PropTypes.func,
     lastCard: PropTypes.string
 }

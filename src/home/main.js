@@ -1,37 +1,45 @@
 import React from 'react';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import CreateGame from './createGame';
+import JoinGame from './joinGame';
 import Header from './header';
+import ErrorModal from './errorModal';
 
 class Main extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { show: false };
-        this.handleShow = this.handleShow.bind(this);
-        this.handleClose = this.handleClose.bind(this);
-    }
-
-    handleShow() {
-        this.setState({ show: true });
-    }
-
-    handleClose() {
-        this.setState({ show: false });
+        this.state = { showCreate: false, showJoin: false, showError: false };
     }
 
     render() {
         return (
             <div>
                 <Header />
-                <div id={'base'}>
+                <div className={'base'} id={'main-section'}>
                     <div id={'main-form'}>
-                        <h1>Exploding Pandas</h1>
-                        <CreateGame show={this.state.show} onHide={this.handleClose} />
-                        <Button onClick={this.handleShow}>Create a game</Button>
+                        <img src={require("../images/logo.png")} alt={"logo"} style={{width: "80%"}}/>
+                        <CreateGame
+                            show={this.state.showCreate}
+                            onHide={() => this.setState({showCreate: false})}
+                        />
+                        <Button
+                            onClick={() => this.setState({showCreate: true})}
+                        >Create a game
+                        </Button>
                         <br />
-                        <Button>Join a game</Button>
+                        <JoinGame
+                            show={this.state.showJoin}
+                            onHide={() => this.setState({showJoin: false})}
+                            error={() => this.setState({showError: true})}
+                        />
+                        <ErrorModal
+                            show={this.state.showError}
+                            onHide={() => this.setState({showError: false})}
+                        />
+                        <Button
+                            onClick={() => this.setState({showJoin: true})}
+                        >Join a game
+                        </Button>
                     </div>
                 </div>
             </div>

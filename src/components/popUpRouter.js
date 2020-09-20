@@ -1,14 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import PopUpRegular from '../components/popUpRegular';
-import PopUpPlayer from '../components/popUpPlayer';
-import PopUpNope from '../components/popUpNope';
-import PopUpExplode from '../components/popUpExplode';
-import PopUpCard from '../components/popUpCard';
-import PopUpNopeCounter from '../components/popUpNopeCounter';
+import PopUpRegular from './popUpRegular';
+import PopUpPlayer from './popUpPlayer';
+import PopUpNope from './popUpNope';
+import PopUpExplode from './popUpExplode';
+import PopUpCard from './popUpCard';
+import PopUpNopeCounter from './popUpNopeCounter';
+import PopUpVictory from './popUpVictory';
 
-export default function PopUpRouterContainer(props) {
-    if (props.showRegular) {
+export default function PopUpRouter(props) {
+    if (props.victory) {
+        return <PopUpVictory
+            show={true}
+            />
+    } else if (props.showRegular) {
         return <PopUpRegular
             show={true}
             regular={props.count}
@@ -58,7 +63,7 @@ export default function PopUpRouterContainer(props) {
     }
 }
 
-PopUpRouterContainer.propTypes = {
+PopUpRouter.propTypes = {
     showRegular: PropTypes.bool,
     showPlayers: PropTypes.bool,
     showNope: PropTypes.bool,

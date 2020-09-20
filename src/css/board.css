@@ -4,23 +4,13 @@ body {
 
 #turn-order {
     text-align: center;
-    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 #main {
     display: flex;
     margin-top: 2rem;
     margin-bottom: 2rem;
-}
-
-#draw-card {
-    border: #f94144;
-    color: white;
-    background-color: #f94144;
-}
-
-#draw-card:hover {
-    background-color: #ce2e30;
 }
 
 #alert {
@@ -45,31 +35,11 @@ span {
     flex-direction: column;
     justify-content: center;
     position: fixed;
-    bottom: 5rem;
+    bottom: 2rem;
     width: 100%;
-    /*white-space: nowrap;*/
 }
 
 #inactive {
     opacity: 0.4;
     pointer-events: none;
-}
-.game-card-container {
-    position: relative;
-    transition: 0.3s ease-out;
-    display: flex;
-    border-radius: 10px;
-    box-shadow: -5px 0 5px #e6e2e2;
-}
-
-.game-card-container:not(:first-child) {
-    margin-left: -50px;
-}
-
-.game-card-container:hover {
-    transform: translateY(-50px);
-}
-
-.game-card-container:hover ~ .game-card-container {
-    transform: translateX(50px);
 }

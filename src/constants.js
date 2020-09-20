@@ -2,14 +2,19 @@ export const ItemTypes = {
     CARD: 'card'
 };
 
+export const MAX_NUM_PLAYERS = 4;
+
 export const CARDS = [
-    { value: 'Regular_Giant_Panda', weight: 70},
-    { value: 'Attack', weight: 5},
-    { value: 'Future', weight: 5},
-    { value: 'Nope', weight: 5},
-    { value: 'Reverse', weight: 5},
-    { value: 'Shuffle', weight: 5},
-    { value: 'Skip', weight: 5},
+    { value: 'Regular_Cyborg', weight: 13},
+    { value: 'Regular_Ghost', weight: 13},
+    { value: 'Regular_Lonely', weight: 13},
+    { value: 'Regular_Pandacow', weight: 13},
+    { value: 'Attack', weight: 8},
+    { value: 'Future', weight: 8},
+    { value: 'Nope', weight: 8},
+    { value: 'Reverse', weight: 8},
+    { value: 'Shuffle', weight: 8},
+    { value: 'Skip', weight: 8},
 ];
 
 export const SERVER_PORT = process.env.SERVER_PORT || 8000;

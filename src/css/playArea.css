@@ -1,19 +1,39 @@
 #play-area {
     display: flex;
     flex: 3;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
 }
 
 #play-pile {
     border: 2px solid #F3F3F3;
-    width: 10rem;
-    height: 15rem;
     display: flex;
     align-items: center;
     position: relative;
+    align-self: flex-start;
+    margin-right: 2rem;
+}
+
+#play-pile-deck {
+    display: flex;
+    justify-content: center;
+}
+
+#deck-pile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #last-card {
     cursor: initial;
+}
+
+#deck {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.deck-card:not(:first-child) {
+    margin-left: -205px;
 }

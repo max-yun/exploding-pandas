@@ -29,12 +29,14 @@ class PopUpExplode extends React.Component {
                     centered
                 >
                     <Modal.Header style={{margin: '0 auto', borderBottom: 0}}>
-                        <Modal.Title id="contained-modal-title-vcenter">
+                        <Modal.Title id="contained-modal-title-vcenter" style={{textAlign: "center"}}>
                             You drew an Exploding Panda!
+                            <img src={require("../images/Bomb.png")} alt={"Bomb"}
+                                 style={{width: "50%"}}/>
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        Too bad you don't have a <b>defuse</b> card... Better luck next time!
+                        Too bad you don't have a <b>Defuse</b> card... Better luck next time!
                         You can continue watching the game if you want.
                     </Modal.Body>
                     <Modal.Footer style={{justifyContent: 'center'}}>

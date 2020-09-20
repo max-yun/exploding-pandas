@@ -16,7 +16,7 @@ export const GameLogger = (props) => {
         } else {
             return (
                 <li key={index}>
-                    {message}
+                    <i>{message}</i>
                 </li>
             );
         }

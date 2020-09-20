@@ -27,13 +27,18 @@ export function generateNopeText(card, player, count=0, cardToSteal=null, numCar
         switch (card) {
             case 'Attack':
                 return `${player} played an Attack card. This will force you to take ${numCards} turns.`;
+            case 'Nope':
+                return `${player} played a Nope card. This will prevent your previous action.`;
+            default:
+                break;
         }
     }
     return null;
 }
 
 function getRegularName(card) {
-    let x = card.split('_');
-    x.shift();
-    return x[0] + ' ' + x[1];
+    // let x = card.split('_');
+    // x.shift();
+    // return x[0] + ' ' + x[1];
+    return 'Panda';
 }
