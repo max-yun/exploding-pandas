@@ -36,7 +36,7 @@ class Main extends React.Component {
                             show={this.state.showError}
                             onHide={() => this.setState({showError: false})}
                         />
-                        <Button
+                        <Button variant={"secondary"}
                             onClick={() => this.setState({showJoin: true})}
                         >Join a game
                         </Button>

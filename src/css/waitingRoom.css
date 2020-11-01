@@ -44,10 +44,10 @@ span {
 #game-id {
     cursor: pointer;
     padding: 0.5rem 1rem;
-    margin: 0.5rem;
+    margin: 0.5rem 1rem;
     color: white;
     background: #577590;
-    font-size: 2rem;
+    font-size: 1.5rem;
     border: 1px solid transparent;
     border-radius: .25rem;
 }
@@ -57,7 +57,7 @@ span {
 }
 
 #joined-players {
-    margin-top: 2rem;
+    margin-top: 3rem;
 }
 
 #players-list {
@@ -68,27 +68,24 @@ span {
 
 .player-card {
     margin-top: 1rem;
-    color: white;
-    font-size: 3rem;
-    padding-left: 1rem;
-    border: 1px solid transparent;
-    border-radius: .25rem;
+    font-size: 1.5rem;
+    font-weight: 500;
 }
 
 .player-card:nth-child(1) {
-    background: #f94144;
+    color: #fc5d2c;
 }
 
 .player-card:nth-child(2) {
-    background: #f3722c;
+    color: #f3892c;
 }
 
 .player-card:nth-child(3) {
-    background: #f8961e;
+    color: #31ba66;
 }
 
 .player-card:nth-child(4) {
-    background: #f9c74f;
+    color: #e0274a;
 }
 
 #waiting-room-child-right {
@@ -100,8 +97,11 @@ span {
     display: flex;
     flex-direction: column;
     margin-right: 10rem;
+    margin-top: 1rem;
+    width: 50%;
 }
 
 #start-cancel-buttons > button {
-    margin-top: 10px;
+    margin-top: 12px;
+    font-size: 1.25rem;
 }

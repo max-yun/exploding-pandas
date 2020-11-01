@@ -76,12 +76,15 @@ export function getLastCard(G) {
 }
 
 export function getRandomHand() {
-    // let hand = ['Defuse'];
-    let hand = [];
+    let hand = ['Reverse', 'Skip'];
     for (let i = 0; i < 5; i++) {
         hand.push(randomSample(CARDS));
     }
     return hand;
+}
+
+export function modulo(n, m) {
+    return ((n % m) + m) % m;
 }
 
 function randomSample(samples) {

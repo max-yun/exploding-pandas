@@ -125,7 +125,7 @@ class CreateGame extends React.Component {
                                 Cancel
                             </Button>
                             <Button variant="primary" type={"submit"}>
-                                Create
+                                Create game
                             </Button>
                         </Modal.Footer>
                     </Form>

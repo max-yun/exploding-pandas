@@ -13,17 +13,17 @@ export default class Deck {
             }
         }
 
-        // addCards(4, 'Regular_Cyborg');
-        // addCards(4, 'Regular_Ghost');
-        // addCards(4, 'Regular_Lonely');
-        // addCards(4, 'Regular_Pandacow');
-        // addCards(4, 'Attack');
-        // addCards(4, 'Skip');
-        // addCards(4, 'Shuffle');
-        // addCards(2, 'Defuse');
-        // addCards(4, 'Nope');
-        // addCards(4, 'Future');
-        // addCards(4, 'Reverse');
+        addCards(4, 'Regular_Cyborg');
+        addCards(4, 'Regular_Ghost');
+        addCards(4, 'Regular_Lonely');
+        addCards(4, 'Regular_Pandacow');
+        addCards(4, 'Attack');
+        addCards(4, 'Skip');
+        addCards(4, 'Shuffle');
+        addCards(2, 'Defuse');
+        addCards(4, 'Nope');
+        addCards(4, 'Future');
+        addCards(4, 'Reverse');
         addCards(this.numBombs, 'Bomb');
         return deck;
     }

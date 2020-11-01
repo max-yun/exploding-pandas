@@ -58,7 +58,6 @@ class BoardContainer extends React.Component {
     }
 
     playCard(cardID) {
-        this.props.moves.playCard(cardID);
         // Error message for when inactive
         if (!this.isActive()) {
             this.activateAlert('It\'s not your turn.');
@@ -76,6 +75,7 @@ class BoardContainer extends React.Component {
         } else if (cardID.includes('Future')) {
             this.setFutureState();
         }
+        this.props.moves.playCard(cardID);
     }
 
     sendMessage(message, nonPlayer=false) {

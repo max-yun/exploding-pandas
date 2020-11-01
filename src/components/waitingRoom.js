@@ -127,13 +127,13 @@ class WaitingRoom extends React.Component {
                         </div>
                     </div>
                     <div id={'joined-players'}>
-                        <h2>Players in the room</h2>
+                        <h2>Players in the room:</h2>
                         <div id={'players-list'}>{players}</div>
                     </div>
                         <div id={'start-cancel-buttons'}>
                             {this.props.host &&
                             <Button variant="primary" onClick={this.props.startGame} disabled={!this.state.filled}>
-                                {this.state.filled ? 'Start game' : 'Waiting for players'}
+                                {this.state.filled ? 'Start game' : 'Waiting for players...'}
                             </Button>
                             }
                             <Button variant="secondary" onClick={this.leaveGame}>

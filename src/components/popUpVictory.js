@@ -18,7 +18,7 @@ function PopUpVictory(props) {
             </Modal.Header>
             <Modal.Body>
                 You have emerged victorious among the chaos of Exploding Pandas!
-                You can start a new game by returning to the homepage.
+                You can start a new game by returning to the <a href={"/"}>homepage</a>.
             </Modal.Body>
         </Modal>
     );

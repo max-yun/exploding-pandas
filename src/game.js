@@ -2,7 +2,7 @@ import Deck from './deck';
 import { TurnOrder } from 'boardgame.io/core';
 import { generatePlayedText } from './generateText';
 import { ActivePlayers } from 'boardgame.io/core';
-import { removeCard, shuffle, getRandomInt, getLastCard, getRandomHand } from './helpers';
+import { removeCard, shuffle, getRandomInt, getLastCard, getRandomHand, modulo } from './helpers';
 import { MAX_NUM_PLAYERS } from './constants';
 let indefinite = require('indefinite');
 
@@ -245,7 +245,7 @@ function customEndTurn(G, ctx) {
 
     if (reversed) {
         for (let i = currentPlayer - 1; i > currentPlayer - numPlayers; i--) {
-            let nextPlayer = (i % numPlayers).toString();
+            let nextPlayer = modulo(i, numPlayers).toString();
             if (!losers.includes(nextPlayer)) {
                 ctx.events.endTurn({ next: nextPlayer });
                 break;
@@ -253,7 +253,7 @@ function customEndTurn(G, ctx) {
         }
     } else {
         for (let i = currentPlayer + 1; i < currentPlayer + numPlayers; i++) {
-            let nextPlayer = (i % numPlayers).toString();
+            let nextPlayer = modulo(i, numPlayers).toString();
             if (!losers.includes(nextPlayer)) {
                 ctx.events.endTurn({ next: nextPlayer });
                 break;
@@ -288,16 +288,6 @@ export const ExplodingPandas = {
     turn: {
         activePlayers: ActivePlayers.ALL,
         order: TurnOrder.DEFAULT,
-        // stages: {
-        //     nope: {
-        //         moves: { handleNope, sendMessage },
-        //         next: Stage.NULL,
-        //     },
-        //     defusing: {
-        //         moves: { handleDefuse, sendMessage },
-        //         next: Stage.NULL,
-        //     },
-        // },
     },
     minPlayers: 2,
     maxPlayers: MAX_NUM_PLAYERS,

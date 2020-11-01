@@ -18,7 +18,8 @@
 }
 
 #main-form button {
-    width: 10rem;
+    width: 12rem;
+    font-size: 1.25rem;
 }
 
 p {
