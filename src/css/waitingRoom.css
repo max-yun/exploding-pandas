@@ -1,0 +1,107 @@
+span {
+    opacity: 1;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.loading:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-animation: ellipsis steps(5, end) 2s infinite;
+    animation: ellipsis steps(5, end) 2s infinite;
+    content: "\2026";
+    width: 0;
+}
+
+@keyframes ellipsis {
+    to {
+        width: 1.25em;
+    }
+}
+
+@-webkit-keyframes ellipsis {
+    to {
+        width: 1.25em;
+    }
+}
+
+#waiting-room {
+    display: flex;
+    flex-direction: row;
+    margin: 5rem 15rem;
+}
+
+#waiting-room-child-left {
+    flex: 2;
+}
+
+#room-link {
+    margin-top: 2rem;
+}
+
+
+#game-id {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    margin: 0.5rem 1rem;
+    color: white;
+    background: #577590;
+    font-size: 1.5rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}
+
+#game-id:hover {
+    background: #303030;
+}
+
+#joined-players {
+    margin-top: 3rem;
+}
+
+#players-list {
+    display: flex;
+    flex-direction: column;
+    margin-right: 10rem;
+}
+
+.player-card {
+    margin-top: 1rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.player-card:nth-child(1) {
+    color: #fc5d2c;
+}
+
+.player-card:nth-child(2) {
+    color: #f3892c;
+}
+
+.player-card:nth-child(3) {
+    color: #31ba66;
+}
+
+.player-card:nth-child(4) {
+    color: #e0274a;
+}
+
+#waiting-room-child-right {
+    flex: 1;
+    height: 5rem;
+}
+
+#start-cancel-buttons {
+    display: flex;
+    flex-direction: column;
+    margin-right: 10rem;
+    margin-top: 1rem;
+    width: 50%;
+}
+
+#start-cancel-buttons > button {
+    margin-top: 12px;
+    font-size: 1.25rem;
+}

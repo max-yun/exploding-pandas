@@ -11,18 +11,71 @@ const app = new Koa();
 const router = new Router();
 const server = Server({ games: [ExplodingPandas] });
 
+// Create a new game
 router.post('/create', koaBody(), async ctx => {
     const r = await axios
         .post(`http://localhost:${INTERNAL_API_PORT}/games/${ExplodingPandas.name}/create`, {
             numPlayers: ctx.request.body.numPlayers,
-            unlisted: ctx.request.body.public,
+            setupData: ctx.request.body.setupData,
+            unlisted: ctx.request.body.unlisted,
         })
         .catch(err => {
             console.error(err);
         });
 
     ctx.body = {
-        room: r.data.gameID,
+        gameID: r.data.gameID,
+    };
+});
+
+// Update a game
+router.post('/update', koaBody(), async ctx => {
+    const gameID = ctx.request.body.gameID;
+    await axios
+        .post(`http://localhost:${INTERNAL_API_PORT}/games/${ExplodingPandas.name}/${gameID}/update`, {
+            playerID: ctx.request.body.playerID,
+            credentials: ctx.request.body.credentials,
+            newName: ctx.request.body.newName,
+        });
+});
+
+// Join a game
+router.post('/join', koaBody(), async ctx => {
+    const gameID = ctx.request.body.gameID;
+    const r = await axios
+        .post(`http://localhost:${INTERNAL_API_PORT}/games/${ExplodingPandas.name}/${gameID}/join`, {
+            playerID: ctx.request.body.playerID,
+            playerName: ctx.request.body.playerName,
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+    ctx.body = {
+        playerCredentials: r.data.playerCredentials,
+    };
+});
+
+// Leave a game
+router.post('/leave/:gameID', koaBody(), async ctx => {
+    const gameID = ctx.params.gameID;
+    // const r = await axios
+    //     .get(`http://localhost:${INTERNAL_API_PORT}/games/${ExplodingPandas.name}`);
+    await axios
+        .post(`http://localhost:${INTERNAL_API_PORT}/games/${ExplodingPandas.name}/${gameID}/leave`, {
+            playerID: ctx.request.body.playerID,
+            credentials: ctx.request.body.credentials,
+        });
+})
+
+// Get a game's information
+router.get('/games/:gameID', async ctx => {
+    const gameID = ctx.params.gameID;
+    const r = await axios
+        .get(`http://localhost:${INTERNAL_API_PORT}/games/${ExplodingPandas.name}/${gameID}`);
+    ctx.body = {
+        players: r.data.players,
+        setupData: r.data.setupData,
     };
 });
 

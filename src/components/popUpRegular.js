@@ -34,15 +34,10 @@ function PopUpRegular(props) {
         }
     }
 
-    if (props.regular < 2) {
-
-    }
-
     return (
         <div>
             <Modal
                 show={props.show && showFirst}
-                onHide={props.onHide}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 backdrop={"static"}

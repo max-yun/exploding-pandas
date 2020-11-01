@@ -11,6 +11,7 @@
     "boardgame.io": "^0.39.14",
     "bootstrap": "^4.5.0",
     "esm": "^3.2.25",
+    "history": "^5.0.0",
     "indefinite": "^2.3.2",
     "jquery": "^1.9.1",
     "koa": "^2.13.0",
@@ -24,7 +25,8 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "react-transition-group": "^4.4.1"
+    "react-transition-group": "^4.4.1",
+    "underscore": "^1.11.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -52,5 +54,8 @@
     "prop-types": "^15.7.2",
     "react-addons-css-transition-group": "^15.6.2",
     "uuid": "^8.3.0"
+  },
+  "engines": {
+    "node": "12.18.1"
   }
 }

@@ -10,14 +10,29 @@ p {
 
 .sidecard {
     border-radius: 0 10px 10px 0;
+    margin-bottom: 8px;
+}
+
+.list-group-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .list-group-item.active {
-    background-color: #f9c74f !important;
-    border-color: #f9C74f !important;
+    background-color: #1d75bc1f !important;
+    border-color: #1d75bc !important;
+    color: black;
 }
 
 .dead-player {
     background-color: #577590 !important;
     border-color: #577590 !important;
+    text-decoration: line-through;
+}
+
+.dead-icon {
+    width: 20%;
+
 }

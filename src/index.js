@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Base from './home/base';
+import { Routes } from './app';
 
 ReactDOM.render((
     <BrowserRouter>
-        <Base />
+        <Routes />
     </BrowserRouter>
 ), document.getElementById('root'));

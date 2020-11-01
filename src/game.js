@@ -1,12 +1,21 @@
 import Deck from './deck';
 import { TurnOrder } from 'boardgame.io/core';
 import { generatePlayedText } from './generateText';
-import { Stage } from 'boardgame.io/core';
 import { ActivePlayers } from 'boardgame.io/core';
+import { removeCard, shuffle, getRandomInt, getLastCard, getRandomHand, modulo } from './helpers';
+import { MAX_NUM_PLAYERS } from './constants';
 let indefinite = require('indefinite');
 
 let reversed = false;
-let numPlayers = 2;
+
+export function startGame(G, ctx) {
+    G.started = true;
+    G.messages.unshift(`Game has begun!`)
+}
+
+export function setName(G, ctx, playerID, newName) {
+    G.players[playerID].name = newName;
+}
 
 export function drawCard(G, ctx) {
     let currentPlayer = ctx.currentPlayer;
@@ -20,11 +29,6 @@ export function drawCard(G, ctx) {
         if (defuseIndex >= 0) {
             removeCard(playerObject, 'Defuse');
             G.messages.unshift(`${playerObject.name} defused the bomb and put it back somewhere!`);
-            // let defuseObject = {};
-            // defuseObject[currentPlayer] = { stage: 'defusing' }
-            // ctx.events.setActivePlayers({
-            //     value: defuseObject,
-            // });
         } else {
             G.messages.unshift(`${playerObject.name} doesn't have a defuse card... RIP.`);
         }
@@ -80,11 +84,6 @@ export function setTargetPlayer(G, ctx, target, val=0, card=null) {
         G.messages.unshift(`${playerObject.name} targeted ${targetPlayerObject.name}.`);
     }
     G.regular = val;
-    // let targetObject = {};
-    // targetObject[target] = { stage: 'nope' }
-    // ctx.events.setActivePlayers({
-    //     value: targetObject,
-    // });
 }
 
 export function handleDefuse(G, ctx, position) {
@@ -116,25 +115,18 @@ export function handleNope(G, ctx, played=false) {
             G.playedCards.push('Nope');
             sendMessage(G, ctx, generatePlayedText('Nope', targetPlayer.name));
             G.counterNope = ctx.currentPlayer;
-            // ctx.events.endStage();
-            // let playerObject = {};
-            // playerObject[ctx.currentPlayer] = { stage: 'nope' }
-            // ctx.events.setActivePlayers({
-            //     value: playerObject,
-            // });
         } else {
             sendMessage(G, ctx, `${targetPlayer.name} didn't stop the action.`);
             playTargetedCard(G, ctx);
-            // ctx.events.endStage();
         }
     }
 }
 
 export function acceptFate(G, ctx, currentPlayer) {
     G.exploding = null;
-    G.losers.push(currentPlayer);
-    G.players[currentPlayer].alive = false;
     customEndTurn(G, ctx);
+    G.players[currentPlayer].alive = false;
+    G.losers.push(currentPlayer);
 }
 
 export function sendMessage(G, ctx, message, playerID=null) {
@@ -146,9 +138,6 @@ export function sendMessage(G, ctx, message, playerID=null) {
 }
 
 function playRegularCard(G, ctx, card, player) {
-    // By convention, regular cards are named like 'Regular_Giant_Panda'
-    let x = card.split('_');
-    x.shift();
     let count = player.hand.filter(each => each === card).length;
     if (count === 1) {
         G.regularInitiator = null;
@@ -249,38 +238,42 @@ function playTargetedCard(G, ctx) {
     G.target = null;
 }
 
+function customEndTurn(G, ctx) {
+    let currentPlayer = parseInt(ctx.currentPlayer);
+    let numPlayers = ctx.numPlayers;
+    let losers = G.losers;
+
+    if (reversed) {
+        for (let i = currentPlayer - 1; i > currentPlayer - numPlayers; i--) {
+            let nextPlayer = modulo(i, numPlayers).toString();
+            if (!losers.includes(nextPlayer)) {
+                ctx.events.endTurn({ next: nextPlayer });
+                break;
+            }
+        }
+    } else {
+        for (let i = currentPlayer + 1; i < currentPlayer + numPlayers; i++) {
+            let nextPlayer = modulo(i, numPlayers).toString();
+            if (!losers.includes(nextPlayer)) {
+                ctx.events.endTurn({ next: nextPlayer });
+                break;
+            }
+        }
+    }
+}
+
+function gameOver(G, ctx) {
+    return G.losers.length === ctx.numPlayers - 1;
+}
+
 export const ExplodingPandas = {
     name: 'exploding-pandas',
-    setup: () => ({
-        deck: new Deck().getCards(),
-        players: {
-            '0': {
-                hand: ['Regular_Giant_Panda', 'Nope', 'Attack'],
-                cardsToDraw: 1,
-                alive: true,
-                name: 'Jeremy',
-            },
-            '1': {
-                hand: ['Regular_Giant_Panda', 'Regular_Giant_Panda', 'Attack', 'Shuffle', 'Nope'],
-                cardsToDraw: 1,
-                alive: true,
-                name: 'Alex',
-            },
-            // '2': {
-            //     hand: ['Regular_Giant_Panda'],
-            //     cardsToDraw: 1,
-            //     alive: true,
-            //     name: 'Jessie',
-            // },
-            // '3': {
-            //     hand: ['Regular_Giant_Panda'],
-            //     cardsToDraw: 1,
-            //     alive: true,
-            //     name: 'Ariana',
-            // },
-        },
+    setup: (ctx, setupData) => ({
+        deck: new Deck(Object.keys(setupData).length - 1).getCards(),
+        players: setupData,
+        started: false,
         playedCards: [],
-        messages: ['Game has begun.'],
+        messages: ['Game has been created.'],
         losers: [],
         initiator: null,
         target: null,
@@ -291,83 +284,20 @@ export const ExplodingPandas = {
         regularInitiator: null,
         steal: null,
     }),
-    moves: { drawCard, playCard, setTargetPlayer, acceptFate, sendMessage, handleNope, handleDefuse },
+    moves: { startGame, setName, drawCard, playCard, setTargetPlayer, acceptFate, sendMessage, handleNope, handleDefuse },
     turn: {
         activePlayers: ActivePlayers.ALL,
         order: TurnOrder.DEFAULT,
-        // stages: {
-        //     nope: {
-        //         moves: { handleNope, sendMessage },
-        //         next: Stage.NULL,
-        //     },
-        //     defusing: {
-        //         moves: { handleDefuse, sendMessage },
-        //         next: Stage.NULL,
-        //     },
-        // },
     },
     minPlayers: 2,
-    maxPlayers: 4,
+    maxPlayers: MAX_NUM_PLAYERS,
     endIf: (G, ctx) => {
-        if (gameOver(G)) {
-            return { winner: ctx.currentPlayer }
-        }
-    }
-}
-
-/* HELPER FUNCTIONS */
-
-function customEndTurn(G, ctx) {
-    let currentPlayer = parseInt(ctx.currentPlayer);
-    let losers = G.losers;
-    if (reversed) {
-        for (let i = currentPlayer - 1; i > currentPlayer - numPlayers; i--) {
-            let nextPlayer = (i % numPlayers).toString();
-            if (!losers.includes(nextPlayer)) {
-                ctx.events.endTurn({ next: nextPlayer });
-                break;
+        if (gameOver(G, ctx)) {
+            for (let i = 0; i < ctx.numPlayers; i++) {
+                if (!G.losers.includes(i.toString())) {
+                    return { winner: i.toString() }
+                }
             }
-        }
-    } else {
-        for (let i = currentPlayer + 1; i < currentPlayer + numPlayers; i++) {
-            let nextPlayer = (i % numPlayers).toString();
-            if (!losers.includes(nextPlayer)) {
-                ctx.events.endTurn({ next: nextPlayer });
-                break;
-            }
-        }
-    }
-}
-
-function gameOver(G) {
-    return G.losers.length === numPlayers;
-}
-
-function removeCard(playerObject, card) {
-    let hand = playerObject.hand;
-    hand.splice(hand.indexOf(card), 1);
-}
-
-function shuffle(G) {
-    let cards = G.deck;
-    let j, x, i;
-    for (i = cards.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        x = cards[i];
-        cards[i] = cards[j];
-        cards[j] = x;
-    }
-    return cards;
-}
-
-function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-}
-
-function getLastCard(G) {
-    for (let i = G.playedCards.length - 1; i >= 0; i--) {
-        if (G.playedCards[i] !== 'Nope') {
-            return G.playedCards[i];
         }
     }
 }

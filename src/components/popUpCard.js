@@ -51,5 +51,7 @@ function PopUpCard(props) {
 export default PopUpCard;
 
 PopUpCard.propTypes = {
-
+    show: PropTypes.bool,
+    onHide: PropTypes.func,
+    cards: PropTypes.array,
 }

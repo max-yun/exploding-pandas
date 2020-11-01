@@ -1,5 +1,6 @@
 export default class Deck {
-    constructor() {
+    constructor(numBombs=2) {
+        this.numBombs = numBombs;
         this.cards = this.initDeck();
         this.shuffle();
     }
@@ -12,14 +13,18 @@ export default class Deck {
             }
         }
 
-        addCards(10, 'Regular_Giant_Panda');
-        addCards(3, 'Attack');
-        addCards(3, 'Skip');
-        addCards(3, 'Shuffle');
-        addCards(1, 'Defuse');
-        addCards(3, 'Nope');
-        addCards(3, 'Future');
-
+        addCards(4, 'Regular_Cyborg');
+        addCards(4, 'Regular_Ghost');
+        addCards(4, 'Regular_Lonely');
+        addCards(4, 'Regular_Pandacow');
+        addCards(4, 'Attack');
+        addCards(4, 'Skip');
+        addCards(4, 'Shuffle');
+        addCards(2, 'Defuse');
+        addCards(4, 'Nope');
+        addCards(4, 'Future');
+        addCards(4, 'Reverse');
+        addCards(this.numBombs, 'Bomb');
         return deck;
     }
 

@@ -1,15 +1,74 @@
-#base {
+.base {
     display: flex;
-    margin: 10rem 40rem 0;
+    margin: 5rem 20rem 0;
+    flex-direction: column;
+}
+
+#main-section {
     justify-content: center;
+    margin: 5rem 20rem 0;
+    flex-direction: row;
 }
 
 #main-form {
     display: flex;
-    justify-content: center;
     flex-direction: column;
+    align-items: center;
+    margin-top: 8rem;
 }
 
-button {
+#main-form button {
+    width: 12rem;
+    font-size: 1.25rem;
+}
 
+p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-example {
+    width: 20%;
+    margin: 0 auto;
+}
+
+.card-row {
+    display: flex;
+    flex-direction: row;
+    width: 20%;
+    margin: 0 auto;
+    justify-content: center;
+}
+
+.centered {
+    text-align: center;
+}
+
+.centered p {
+    font-size: 1.5em;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    margin: 2rem 0;
+}
+
+.card-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.card-image img {
+    width: 50%;
+}
+
+.caption {
+    flex: 1;
+    font-size: 2em;
+}
+
+.right {
+    text-align: right;
 }
