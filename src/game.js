@@ -2,7 +2,7 @@ import Deck from './deck';
 import { TurnOrder } from 'boardgame.io/core';
 import { generatePlayedText } from './generateText';
 import { ActivePlayers } from 'boardgame.io/core';
-import { removeCard, shuffle, getRandomInt, getLastCard, getRandomHand, modulo } from './helpers';
+import { removeCard, shuffle, getRandomInt, getLastCard, modulo } from './helpers';
 import { MAX_NUM_PLAYERS } from './constants';
 let indefinite = require('indefinite');
 
