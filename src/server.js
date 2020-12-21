@@ -5,11 +5,16 @@ import Koa from 'koa';
 import koaBody from 'koa-body';
 import Router from 'koa-router';
 import cors from '@koa/cors';
+import serve from 'koa-static';
+import path from 'path';
 import { SERVER_PORT, API_PORT, INTERNAL_API_PORT } from './constants';
 
 const app = new Koa();
 const router = new Router();
 const server = Server({ games: [ExplodingPandas] });
+const frontendPath = path.resolve(__dirname, './build');
+
+//server.app.use(serve(frontendPath));
 
 // Create a new game
 router.post('/create', koaBody(), async ctx => {
@@ -78,6 +83,15 @@ router.get('/games/:gameID', async ctx => {
         setupData: r.data.setupData,
     };
 });
+
+// server.run(SERVER_PORT, () => {
+//     server.app.use(
+//         async(ctx, next) => await serve(frontendPath)(
+//             Object.assign(ctx, { path: 'index.html' }),
+//             next
+//         )
+//     )
+// });
 
 const serverHandle = server.run({
     port: SERVER_PORT,
