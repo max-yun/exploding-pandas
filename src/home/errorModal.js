@@ -13,7 +13,7 @@ export default function ErrorModal(props) {
                 <Modal.Title>An error occurred!</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                Please ensure that the room you are trying to join is not full.
+                Please ensure that the room you are trying to join either exists or has space.
                 If errors continue to occur, please try again later.
             </Modal.Body>
             <Modal.Footer>

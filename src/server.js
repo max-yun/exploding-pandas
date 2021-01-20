@@ -13,7 +13,11 @@ const app = new Koa();
 const router = new Router();
 const server = Server({ games: [ExplodingPandas] });
 const frontendPath = path.resolve(__dirname, './build');
+const options = {
+    origin: '*'
+};
 
+app.use(cors(options));
 //server.app.use(serve(frontendPath));
 
 // Create a new game
@@ -76,12 +80,16 @@ router.post('/leave/:gameID', koaBody(), async ctx => {
 // Get a game's information
 router.get('/games/:gameID', async ctx => {
     const gameID = ctx.params.gameID;
-    const r = await axios
-        .get(`http://localhost:${INTERNAL_API_PORT}/games/${ExplodingPandas.name}/${gameID}`);
-    ctx.body = {
-        players: r.data.players,
-        setupData: r.data.setupData,
-    };
+    try {
+        const r = await axios
+            .get(`http://localhost:${INTERNAL_API_PORT}/games/${ExplodingPandas.name}/${gameID}`);
+        ctx.body = {
+            players: r.data.players,
+            setupData: r.data.setupData,
+        };
+    } catch(e) {
+
+    }
 });
 
 // server.run(SERVER_PORT, () => {
@@ -106,7 +114,6 @@ const serverHandle = server.run({
     }
 });
 
-app.use(cors());
 app.use(router.routes()).use(router.allowedMethods());
 
 const appHandle = app.listen(API_PORT, () => {

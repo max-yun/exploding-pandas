@@ -8,6 +8,7 @@ import axios from 'axios';
 import { API_PORT } from '../constants';
 import FormControl from 'react-bootstrap/FormControl';
 import '../css/joinGame.css';
+import ErrorPage from './errorPage';
 
 class JoinGame extends React.Component {
     constructor(props) {
@@ -42,14 +43,14 @@ class JoinGame extends React.Component {
 
     async joinGame(e) {
         e.preventDefault();
+        let playerID = null;
         if (this.state.name && this.state.gameID) {
             // Retrieve the room data to figure out the new player's ID
-            const getRoomResponse = await axios
-                .get(`${this.apiBase}/games/${this.state.gameID}`);
-
-            let playerID = this.generatePlayerID(getRoomResponse.data.players, getRoomResponse.data.setupData);
-            // Join the room
             try {
+                const getRoomResponse = await axios
+                    .get(`${this.apiBase}/games/${this.state.gameID}`);
+                playerID = this.generatePlayerID(getRoomResponse.data.players, getRoomResponse.data.setupData);
+                // Join the room
                 const joinResponse = await axios
                     .post(`${this.apiBase}/join`, {
                         gameID: this.state.gameID,
@@ -66,8 +67,7 @@ class JoinGame extends React.Component {
                         credentials: credentials
                     }
                 });
-            } catch(e) {
-                console.error(e);
+            } catch (err) {
                 this.props.onHide();
                 this.props.error();
             }
@@ -76,6 +76,11 @@ class JoinGame extends React.Component {
 
     render() {
         const { to, staticContext, error, ...rest } = this.props;
+        if (this.state.error) {
+            return (
+                <ErrorPage />
+            )
+        }
         return (
             <Modal
                 {...rest}
