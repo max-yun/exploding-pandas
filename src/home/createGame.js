@@ -22,9 +22,8 @@ class CreateGame extends React.Component {
         this.changeNumPlayers = this.changeNumPlayers.bind(this);
         this.changeUnlisted = this.changeUnlisted.bind(this);
         this.createGame = this.createGame.bind(this);
-        // this.apiBase = (process.env.NODE_ENV === 'production') ? '/api' :
-        //     `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
-        this.apiBase = `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
+        this.apiBase = (process.env.NODE_ENV === 'production') ? '/api' :
+            `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
     }
 
     changeName(e) {
