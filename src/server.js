@@ -5,20 +5,22 @@ import Koa from 'koa';
 import koaBody from 'koa-body';
 import Router from 'koa-router';
 import cors from '@koa/cors';
-import serve from 'koa-static';
-import path from 'path';
 import { SERVER_PORT, API_PORT, INTERNAL_API_PORT } from './constants';
 
 const app = new Koa();
 const router = new Router();
-const server = Server({ games: [ExplodingPandas] });
-const frontendPath = path.resolve(__dirname, './build');
+const server = Server({
+    games: [ExplodingPandas],
+    https: {
+        cert: '',
+        key: ''
+    },
+});
 const options = {
     origin: '*'
 };
 
 app.use(cors(options));
-//server.app.use(serve(frontendPath));
 
 // Create a new game
 router.post('/create', koaBody(), async ctx => {

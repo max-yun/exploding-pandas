@@ -20,8 +20,9 @@ class JoinGame extends React.Component {
         this.changeName = this.changeName.bind(this);
         this.changeGameID = this.changeGameID.bind(this);
         this.joinGame = this.joinGame.bind(this);
-        this.apiBase = (process.env.NODE_ENV === 'production') ? '/api' :
-            `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
+        // this.apiBase = (process.env.NODE_ENV === 'production') ? '/api' :
+        //     `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
+        this.apiBase = `http://localhost:${API_PORT}`;
     }
 
     changeName(e) {

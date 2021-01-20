@@ -19,8 +19,9 @@ class WaitingRoom extends React.Component {
             copyMessage: null,
             timer: null,
         };
-        this.apiBase = (process.env.NODE_ENV === 'production') ? '/api' :
-            `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
+        // this.apiBase = (process.env.NODE_ENV === 'production') ? '/api' :
+        //     `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
+        this.apiBase = `http://localhost:${API_PORT}`;
     }
 
     componentDidMount() {

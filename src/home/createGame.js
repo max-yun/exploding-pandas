@@ -24,8 +24,7 @@ class CreateGame extends React.Component {
         this.createGame = this.createGame.bind(this);
         // this.apiBase = (process.env.NODE_ENV === 'production') ? '/api' :
         //     `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
-        // console.log(this.apiBase);
-        this.apiBase = "http://localhost:8001";
+        this.apiBase = `http://localhost:${API_PORT}`;
     }
 
     changeName(e) {
